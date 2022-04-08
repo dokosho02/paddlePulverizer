@@ -7,3 +7,4 @@ pdf2image
 Pillow
 PyPDF4
 pdf-annotate
+pytesseract
