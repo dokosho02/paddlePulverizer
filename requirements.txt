@@ -1,0 +1,9 @@
+opencv_contrib_python>=4.4.0.46
+paddleocr>=2.3.0.1
+tqdm
+numpy
+loguru
+pdf2image
+Pillow
+PyPDF4
+pdf-annotate
