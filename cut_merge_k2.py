@@ -161,6 +161,13 @@ def cropFromLog(doc):
     # delete pdf folder
     print("\nremove the pdf folder and its contents\n")
     shutil.rmtree(doc.fileFolder)
+    for fl in doc.finalFiles:
+        try:
+            os.remove(fl)
+            print(f"{fl} has been deleted!")
+        except:
+            print(f"No {fl}, skipping...")
+
     doc.createFolders()
     
     f = codecs.open(doc.logPath,"r",encoding='utf-8')

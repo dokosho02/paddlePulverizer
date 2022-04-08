@@ -1,3 +1,4 @@
+#!/usr/local/bin/python3
 import argparse
 from datetime import datetime
 from cut_merge_k2 import cutAndMerge

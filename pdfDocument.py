@@ -47,6 +47,24 @@ class PdfDocument():
         self.pagepdfFigureFolder = os.path.join(self.fileFolder,'pagepdf', 'f' )
         self.pagepdfTableFolder  = os.path.join(self.fileFolder,'pagepdf', 'b' )
 
+        self.xkfile  = (self.path).replace('.pdf', '_xk.pdf')
+        self.fkfile  = (self.path).replace('.pdf', '_fk.pdf')
+        self.bkfile  = (self.path).replace('.pdf', '_bk.pdf')
+        self.bmfile  = (self.path).replace('.pdf', '_b.pdf')
+        self.xmfile  = (self.path).replace('.pdf', '_x.pdf')
+        self.fmfile  = (self.path).replace('.pdf', '_f.pdf')
+        self.boxfile = (self.path).replace('.pdf', '_box.pdf')
+        self.anntfile= (self.path).replace('.pdf', '_annt.pdf')
+
+        self.finalFiles = [
+            self.xkfile,
+            self.xmfile,
+            self.fkfile,
+            self.fmfile,
+            self.bkfile,
+            self.bmfile,
+        ]
+
         # log file
         self.logPath = (self.path).replace('.pdf', '.md')
 
