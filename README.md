@@ -3,6 +3,13 @@
 
 page layout analysis of pdf document
 
+
+## Usage
+run following command to see help
+```sh
+python3 pulverizer.py -h
+```
+
 ## denpendencies
 
 ### Python packages

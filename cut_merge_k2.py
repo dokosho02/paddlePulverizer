@@ -27,21 +27,34 @@ boxColors = [ (0,0,1), (1, 0, 0), (0,1,0)]    # BRG, x-b-f
 # ------------------------
 # ScienceDirect
 # ------------------------
+col_div_percents = [
+    [1, 0, [0] ],
+    [2, 65, [48] ],
+    [3, 35, [38,69] ],
+]
 
-def main():
+
+
+def cutAndMerge(pdfName,startPage,endPage, col, k2dpi):
+    # parameter initilization
+    pdp, pcp = col_div_percents[0][1], col_div_percents[0][2]
+    for para in col_div_percents:
+        if (col==para[0]):
+            pdp = para[1]
+            pcp = para[2]
+
     # doc definition
     pdoc = PdfDocument(
-        fileName = "2015_Furuya_determination" + '.pdf',
-        startPage= 1   ,       # 112
-        endPage  = 550,       # 365
-        columns  = 2   ,   # 2
-        pageDividerPercent = 65 ,   #    65; 35/8
-        pageColumnPercents = [48] ,   #    49, [38,69], [26,53,75], [25,38,50,68,76,88]
-        k2dpi = 500,
+        fileName = pdfName,
+        startPage= startPage,       # 112
+        endPage  = endPage,       # 365
+        columns  = col   ,   # 2
+        pageDividerPercent = pdp ,   #    65; 35/8
+        pageColumnPercents = pcp ,   #    49, [38,69], [26,53,75], [25,38,50,68,76,88]
+        k2dpi = k2dpi,
         twoSides=False
         )
     # --------------------------------- 
-
 
     if ( os.path.exists(pdoc.logPath) ):
         print("\na log file exists!\n")
@@ -146,7 +159,7 @@ def processPage(i, imgPaths, pdoc):
 def cropFromLog(doc):
 
     # delete pdf folder
-    print("\nremove the pdf foder and its contents\n")
+    print("\nremove the pdf folder and its contents\n")
     shutil.rmtree(doc.fileFolder)
     doc.createFolders()
     
@@ -219,7 +232,6 @@ def cropFromLog(doc):
     outpath_annotated = doc.path.replace(".pdf", "_annt.pdf")
     annotator.write(outpath_annotated)
 
-
 """
 N1-N5 grammar
 shoPdf = ShoPDF(
@@ -238,15 +250,6 @@ shoPdf = ShoPDF(
     twoSides=False
     )
 """
-if __name__ == '__main__':
-    start = datetime.datetime.now()
-    # --------------
-    main()
-    # --------------
-    end = datetime.datetime.now()
-    timeDuration = str(end - start).zfill(4)
-    print(end)
-    print( 'Time cost -- {}'.format(timeDuration) )
 
 
 # https://www.geeksforgeeks.org/delete-a-directory-or-file-using-python/
