@@ -14,6 +14,7 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+
 appHeader = f"{bcolors.HEADER}Page layout analysis for pdf document{bcolors.ENDC}"
 
 # ----------------------
@@ -50,7 +51,8 @@ def main():
 
     # Read arguments from command line
     args = parser.parse_args()
-
+    
+    print(appHeader)
     print(f"{bcolors.OKCYAN}These files will be processed:")
     [print(f"\t{pdf}") for pdf in args.pdfs]
     print(f"{bcolors.ENDC}")
@@ -69,7 +71,6 @@ def main():
 if __name__ == '__main__':
     start = datetime.now()
     print(start)
-    print(appHeader)
     # --------------
     main()
     # --------------
