@@ -1,4 +1,3 @@
-
 # PaddlePulverizer
 
 page layout analysis of pdf document
@@ -32,3 +31,6 @@ python3 pulverizer.py -h
 
 - [`k2pdfopt`](https://www.willus.com/k2pdfopt/) - reflow of pdf text file
 
+## Issues
+
+- `opencv-python==4.1.2.30` [stackoverflow discussion](https://stackoverflow.com/questions/70537488/cannot-import-name-registermattype-from-cv2-cv2)
