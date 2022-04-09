@@ -2,23 +2,73 @@
 
 page layout analysis of pdf document
 
+and then reflow the pdf document for reading on kindle paperwhite 3 using [`k2pdfopt`](https://www.willus.com/k2pdfopt/)
 
 ## Usage
-run following command to see help
+
+### Command line
+
+#### Help
 ```sh
-python3 pulverizer.py -h
+python pulverizer.py -h
 ```
 
-## denpendencies
+#### Page layout analysis
+```sh
+python pulverizer.py yourfile1.pdf [yourfile2.pdf ...] [-c 1] [-p 1 20]
+```
+then you could edit the `.md` file
+
+#### Crop pdf(s) based on `.md` file and reflow the text
+```sh
+python pulverizer.py yourfile.pdf [yourfile2.pdf ...] -md [-k 300]
+```
+
+
+The same pattern (arguments) is applied to all `yourfile.pdf`.
+
+### Telegram bot
+
+```sh
+/start
+```
+
+```sh
+/help
+```
+
+```sh
+/pl
+```
+
+```sh
+/md
+```
+
+## Problem
+
+It is very difficult to pack the source code together via `pyinstaller` due to the complex structures of `paddle(ocr)` package(s).
+
+## Denpendencies
 
 ### Python packages
-- `PyPDF4`
-- `pdf-annotate`
-- `pdf2image`
+- pdf processing
+  - `PyPDF4`
+  - `pdf-annotate`
+  - `pdf2image`
+- image processing
+  - `opencv_contrib_python>=4.4.0.46`
+  - `opencv-python-headless==4.1.2.30`
+  - `Pillow`
 - [`Paddle series`](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.2/ppstructure/README_ch.md)
   - `PaddlePaddle`
   - `Layout-Parser`
   - `PaddleOCR`
+- others
+  - `tqdm`
+  - `loguru`
+  - `pytesseract`
+
 ### Other dependencies
 
 - `poppler` - the dependency of `pdf2image` package
@@ -27,7 +77,7 @@ python3 pulverizer.py -h
   - [for windows](https://github.com/UB-Mannheim/tesseract/wiki/)
 
 
-### optional functions
+### Optional functions
 
 - [`k2pdfopt`](https://www.willus.com/k2pdfopt/) - reflow of pdf text file
 
