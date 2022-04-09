@@ -6,7 +6,6 @@ from loguru import logger
 from tqdm import tqdm
 
 from arrangement import arrangeOrder
-from paddleocr import PPStructure
 
 import pytesseract
 
@@ -84,6 +83,8 @@ class ImagePage():
         return [x,y,l,u]
     # ------------------------------------------------------
     def layoutAnalysisByPaddle(self, totalPageNumber):
+        from paddleocr import PPStructure
+
         table_engine = PPStructure( show_log=False,use_gpu=False )
         img = cv2.imread(self.path)
         self.pagewidth = img.shape[1]

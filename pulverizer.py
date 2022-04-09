@@ -47,7 +47,10 @@ def main():
         default=500,
         help = "dpi value for k2pdfopt reflow text")
 
-
+    parser.add_argument("-md","--markdown", 
+        action='store_true',
+	    default=False,
+        help = "re-crop pdf based on .md file")
 
     # Read arguments from command line
     args = parser.parse_args()
@@ -66,6 +69,7 @@ def main():
             endPage  =args.pagerange[1],
             col=args.column,
             k2dpi=args.kdpi,
+            mdtf = args.markdown,
         )
 
 if __name__ == '__main__':

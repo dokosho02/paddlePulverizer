@@ -5,7 +5,6 @@ import shutil
 # customize
 from pdfDocument import PdfDocument
 from pdfPage import PdfPage
-from imagePage import ImagePage
 
 from pic2pdf import image_to_pdf
 # import _thread
@@ -35,7 +34,7 @@ col_div_percents = [
 
 
 
-def cutAndMerge(pdfName,startPage,endPage, col, k2dpi):
+def cutAndMerge(pdfName,startPage,endPage, col, k2dpi, mdtf):
     # parameter initilization
     pdp, pcp = col_div_percents[0][1], col_div_percents[0][2]
     for para in col_div_percents:
@@ -56,18 +55,17 @@ def cutAndMerge(pdfName,startPage,endPage, col, k2dpi):
         )
     # --------------------------------- 
 
-    if ( os.path.exists(pdoc.logPath) ):
-        print("\na log file exists!\n")
-        cutOrNot = input("\nWould you like to crop the pdf document?\n(y/n) -- ")
-        if (cutOrNot == "y"):
+    if mdtf:
+        if ( os.path.exists(pdoc.logPath) ):
+            print("\na log file exists!\n")
             cropFromLog(pdoc)
-        # merge
-        # mergeOrNot = input("\nWould you like to merge the cropped pdfs?\n(y/n) -- ")
-        mergeOrNot = "y"
-        if (mergeOrNot == "y"):
             pdoc.mergeAndReflow()
-    # finish
+            # finish
     else:
+
+        # start to process images
+        from imagePage import ImagePage
+
         # create log file
         f = codecs.open(pdoc.logPath,"w",encoding='utf-8')
         f.close()
