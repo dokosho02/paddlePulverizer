@@ -52,7 +52,17 @@ class PulverizerBot():
 
     ################################
     def help_command(self, update, context):
-        context.bot.send_message(chat_id=update.message.chat_id, text="I'm a page layout analysis bot (for pdf document - reading on Kindle Paperwhite 3 device).\n\n\tIf you want to remove all your data, just type `/rm`\n\n\tIf you have any questions, please contact @hk_tobeno1.\n", parse_mode=telegram.ParseMode.MARKDOWN)
+        descrip = """
+        I am a page layout analysis bot (for pdf document - reading on Kindle Paperwhite 3 device).
+        If you want to remove all your data, just type `/rm`.
+        If you have any questions, please contact `@hk_tobeno1`.
+        """
+
+        context.bot.send_message(
+            chat_id=update.message.chat_id,
+            text=descrip,
+            parse_mode=telegram.ParseMode.MARKDOWN
+            )
             # text="*bold* _italic_ `fixed width font` [link](http://google.com).", parse_mode=telegram.ParseMode.MARKDOWN
     ################################
     def start(self, update, context):
@@ -82,9 +92,6 @@ class PulverizerBot():
         elif file_extension== ".md":
             self.mdPath =file_path
         update.message.reply_text(text=f"You have sent me a {file_extension} file." )
-
-        
-
     ################################################################
     def rename_pdf(self, update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
@@ -112,8 +119,8 @@ class PulverizerBot():
     def send_box_md_files(self, update, context):        
         self.mdPath = self.pdfPath.replace('.pdf', '.md')
         box_pdfname = self.pdfPath.replace('.pdf', '_box.pdf')
-        context.bot.send_document(chat_id=update.message.chat_id, document=open(self.mdPath, 'rb') )
-        context.bot.send_document(chat_id=update.message.chat_id, document=open(box_pdfname, 'rb') )
+
+        [context.bot.send_document(chat_id=update.message.chat_id, document=open(fl, 'rb') ) for fl in [self.mdPath, box_pdfname] ]
     ################################################################
     def md_crop(self, update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )

@@ -116,4 +116,6 @@ It is very difficult to pack the source code together via `pyinstaller` due to t
 ## Issues
 - [ ] the bottom of rectangle shapes should be lower
 - [ ] `pdf-annotate` - rectangle shapes have some drift but the pdf cropping is correct
+- [ ] delete the last line of `.md` file - 2022-04-11 - ?
+
 - [x] `opencv-python-headless==4.1.2.30` [stackoverflow discussion](https://stackoverflow.com/questions/70537488/cannot-import-name-registermattype-from-cv2-cv2)
