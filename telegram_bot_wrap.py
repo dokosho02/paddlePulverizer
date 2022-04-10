@@ -1,0 +1,225 @@
+import telegram
+from telegram.ext import Updater
+from telegram.ext import CommandHandler
+from telegram.ext import MessageHandler, Filters
+# from telegram import Document
+
+# import schedule
+import time, platform, datetime, os, sys
+import subprocess
+
+from loguru import logger
+import shutil
+
+
+################################
+
+# sho_kindle_bot_token = "1883219374:AAE9s3nKxE75sRFNtN-s9saFO4IWv8hrh0Q"
+# pulverizerFile = "pulverizer.py"
+
+
+
+def getpdfName(pdfFilename, file_path):
+    if pdfFilename=="":
+        pdfFilename = file_path
+    return pdfFilename
+################################
+def get_platform():
+    SysName = platform.system()
+    return SysName
+
+################################
+def run_python_script(pyFile):
+
+    pyEngine = 'python3'    # default for MacOS
+    SysName = get_platform()
+    if (SysName=='Windows'):    # Windows
+        pyEngine = 'python'
+    elif (SysName=='Darwin'):    # MacOS
+        pyEngine = 'python3'
+    
+    pyShell = f"{pyEngine} {pyFile}"
+    subprocess.call(pyShell, shell=True)
+################################
+
+class PulverizerBot():
+    def __init__(self):
+        self.token = os.environ['PULVERIZER_BOT_TOKEN']
+        self.botDowloadFolder = "bot"
+        self.pulverizerFile = "pulverizer.py"
+        self.workFolder = ""
+        self.pdfPath = ""
+
+    ################################
+    def help_command(self, update, context):
+        context.bot.send_message(chat_id=update.message.chat_id, text="I'm a Kindle bot. You can use me to\n\n 1. convert a `.epub` file to `.mobi` format and then send it to your kindle:\n\t\t 1) send a `.epub` file to me;\n\t\t 2) use command below to send to your kindle: `/eps + people_code`\t(/eps - 'ep'ub + 's'end, example: `/eps s`)\n\n 2. send a `.pdf` file to me and convert it to suitable size for kindle\n\t\t 1) `/pdfs people_code pdf_name` - send pdf with `pdf_name` to kindle with `people_code` (example: `/pdfs s 2017_geoscience`)\n\t\t 2) `/sdc margins separation_lines` - convert `ScienceDirect` thesis paper to kindle size (example: `/sdc 10,10,590,739 70,300,535`) and\n\t\t  `/k2 options` - a more general command (example: `/k2 -dev kp3 -idpi 420 -odpi 420 -fc- -bpc 1 -col 1 -m 0,0.8,0,0.8 -p 2-3`)\n\t\t 3) `/spch` - check separation line for `ScienceDirect` thesis\n\n\tIf you want to clear all your data, just type `/clear`\n\n\tfor your `people_code`, please contact @dokosho.\n", parse_mode=telegram.ParseMode.MARKDOWN)
+            # text="*bold* _italic_ `fixed width font` [link](http://google.com).", parse_mode=telegram.ParseMode.MARKDOWN
+    ################################
+    def start(self, update, context):
+        self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
+        context.bot.send_message(chat_id=update.message.chat_id, text="I'm ready to work.\nYou can use `/help` command to learn how to use me.", parse_mode=telegram.ParseMode.MARKDOWN)
+    ################################
+    def file_identification(self, update, context):
+        # create folder
+        self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
+        if not os.path.exists(self.botDowloadFolder):
+            os.makedirs(self.botDowloadFolder)
+
+        if not os.path.exists(self.workFolder):
+                os.makedirs(self.workFolder)
+        ## bot geting the document and its file_name
+        doc = context.bot.get_file(update.message.document.file_id)
+        fileName = update.message.document.file_name
+        print(fileName)
+        file_path = os.path.join( self.workFolder, fileName)
+
+        ##bot saving this file to a directory on your PC
+        doc.download(file_path)
+
+        file_mame, file_extension = os.path.splitext(file_path)
+        if file_extension== ".pdf":
+            self.pdfPath=file_path
+        elif file_extension== ".md":
+            self.mdPath =file_path
+        update.message.reply_text(text=f"You have sent me a {file_extension} file." )
+
+        
+
+    ################################################################
+    def rename_pdf(self, update, context):
+        self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
+
+        convert_parameter = ' '.join(context.args)
+        print(convert_parameter)
+        if convert_parameter!=None:
+            self.new_pdfPath = os.path.join( self.workFolder, f"{convert_parameter}.pdf")
+
+            try:
+                os.rename(self.pdfPath, self.new_pdfPath)
+                self.pdfPath = self.new_pdfPath
+            except:
+                pass
+    ################################################################
+    def plas(self, update, context):
+        self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
+
+        convert_parameter = ' '.join(context.args)
+        print(convert_parameter)
+        if convert_parameter!=None:
+            run_python_script( f"{self.pulverizerFile} {self.pdfPath} {convert_parameter}" )
+
+        box_pdfname = self.pdfPath.replace('.pdf', '_box.pdf')
+        context.bot.send_document(chat_id=update.message.chat_id, document=open(box_pdfname, 'rb') )
+        self.mdPath = self.pdfPath.replace('.pdf', '.md')
+        context.bot.send_document(chat_id=update.message.chat_id, document=open(self.mdPath, 'rb') )
+    ################################################################
+    def md_crop(self, update, context):
+        self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
+
+        convert_parameter = ' '.join(context.args)
+        print(convert_parameter)
+        if convert_parameter!=None:
+            run_python_script( f"{self.pulverizerFile} {self.pdfPath} -md {convert_parameter}" )
+
+        annotate_pdfname = self.pdfPath.replace('.pdf', '_annt.pdf')
+        context.bot.send_document(chat_id=update.message.chat_id, document=open(annotate_pdfname, 'rb') )
+    ################################################################
+    def xk_file(self, update, context):
+        self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
+
+        xk_filepath = self.pdfPath.replace(".pdf", "_xk.pdf")
+        context.bot.send_document(chat_id=update.message.chat_id, document=open(xk_filepath, 'rb') )
+    ################################################################
+    def rm_files(self, update, context, replyTxt=True):
+        self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
+
+        shutil.rmtree(self.workFolder)
+        if replyTxt==True:
+            update.message.reply_text( text="All your data is deleted!" )
+        self.pdfPath=""
+    ################################################################
+    def list_files(self, update, context):
+        self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
+
+        finalText = ""
+        try:
+            dir_list = os.listdir(self.workFolder)
+            for i in dir_list:
+                finalText+=f"{i}\n"
+            finalText = f"{len(dir_list)} file(s) in your folder:\n" + finalText
+        except:
+            finalText = "Nothing..."
+        # finalText = ""
+        # [finalText=finalText+f"{i}n" for i in dir_list]
+        update.message.reply_text( text=finalText )
+    ################################################################
+    def send_files(self, update, context):
+        self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
+
+        convert_parameter = ' '.join(context.args)
+        print(convert_parameter)
+        if convert_parameter!=None:
+            files = convert_parameter.split(" ")
+
+            for fl in files:
+                file_to_send = os.path.join(self.workFolder, fl)
+                context.bot.send_document(chat_id=update.message.chat_id, document=open(file_to_send, 'rb') )
+
+################################
+
+    def startBot(self):
+        updater = Updater(token=self.token, use_context=True)
+        dispatcher = updater.dispatcher
+
+        # command
+
+        # basic - start and help
+        start_handler = CommandHandler('start', self.start)
+        dispatcher.add_handler(start_handler)
+
+        help_handler = CommandHandler('help', self.help_command)
+        dispatcher.add_handler(help_handler)
+
+        # download
+        download_handler = MessageHandler(Filters.document, self.file_identification)
+        dispatcher.add_handler(download_handler)
+
+        # functions
+        rn_handler = CommandHandler('rn', self.rename_pdf)
+        dispatcher.add_handler(rn_handler)
+
+        pl_handler = CommandHandler('pl', self.plas)
+        dispatcher.add_handler(pl_handler)
+
+        md_handler = CommandHandler('md', self.md_crop)
+        dispatcher.add_handler(md_handler)
+
+        xk_handler = CommandHandler('xk', self.xk_file)
+        dispatcher.add_handler(xk_handler)
+
+        rm_handler = CommandHandler('rm', self.rm_files)
+        dispatcher.add_handler(rm_handler)
+
+        ls_handler = CommandHandler('ls', self.list_files)
+        dispatcher.add_handler(ls_handler)
+
+        send_handler = CommandHandler('sn', self.send_files)
+        dispatcher.add_handler(send_handler)
+        # --------------
+        updater.start_polling()
+
+# --------------------------------------
+def main():
+    plvbot = PulverizerBot()
+    plvbot.startBot()
+# --------------------------------------
+if __name__ == '__main__':
+    # --------------
+    main()
+    # --------------
+
+
+# ---------------------
+"""
+https://stackoverflow.com/questions/65801985/not-able-to-save-the-file-in-custom-path-directory-using-python-telegram-bot
+"""

@@ -62,9 +62,9 @@ def cutAndMerge(pdfName,startPage,endPage, col, k2dpi, mdtf):
             pdoc.mergeAndReflow()
             # finish
     else:
-
-        # start to process images
-        from imagePage import ImagePage
+        
+        pdoc.removeFiles()
+        pdoc.createFolders()
 
         # create log file
         f = codecs.open(pdoc.logPath,"w",encoding='utf-8')
@@ -123,6 +123,8 @@ def cutAndMerge(pdfName,startPage,endPage, col, k2dpi, mdtf):
 
 # -------------------------------------
 def processPage(i, imgPaths, pdoc):
+    # start to process images
+    from imagePage import ImagePage
     # image
     # 2 create an object of ImagePage
     pageNo = pdoc.startPage + i - 1
@@ -157,15 +159,7 @@ def processPage(i, imgPaths, pdoc):
 def cropFromLog(doc):
 
     # delete pdf folder
-    print("\nremove the pdf folder and its contents\n")
-    shutil.rmtree(doc.fileFolder)
-    for fl in doc.finalFiles:
-        try:
-            os.remove(fl)
-            print(f"{fl} has been deleted!")
-        except:
-            print(f"No {fl}, skipping...")
-
+    doc.removeFiles()
     doc.createFolders()
     
     f = codecs.open(doc.logPath,"r",encoding='utf-8')

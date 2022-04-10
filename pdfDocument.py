@@ -63,6 +63,8 @@ class PdfDocument():
             self.fmfile,
             self.bkfile,
             self.bmfile,
+            self.boxfile,
+            self.anntfile,
         ]
 
         # log file
@@ -117,6 +119,16 @@ class PdfDocument():
     def createLog(self):
         pass
 
+    def removeFiles(self):
+            # delete pdf folder
+        print("\nremove the pdf folder and its contents\n")
+        shutil.rmtree(self.fileFolder)
+        for fl in self.finalFiles:
+            try:
+                os.remove(fl)
+                print(f"{fl} has been deleted!")
+            except:
+                print(f"No {fl}, skipping...")
     # ----------------------
     def convert2Image(self):
         print( '{0} pages will be processed in this session...\n'.format(self.endPage - self.startPage +1 ) )

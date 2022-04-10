@@ -14,22 +14,21 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-
 appHeader = f"{bcolors.HEADER}Page layout analysis for pdf document{bcolors.ENDC}"
-
 # ----------------------
 def main():
     # Initialize parser
-    parser = argparse.ArgumentParser(description=appHeader,
-    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    parser = argparse.ArgumentParser(
+        description=appHeader,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-
+    # --------
     # Adding positional Argument
     parser.add_argument("pdfs",
         type=str,
         nargs='+',    # 1 or more arguments
         help = "PDF file name/path")
-
+    # --------
     # Adding optional argument
     parser.add_argument("-c","--column", 
         type=int,
@@ -41,17 +40,17 @@ def main():
         default=[1,500],
         nargs=2,    # two arguments
         help = "page range to process")
-
-    parser.add_argument("-k", "--kdpi",
-        type=int,
-        default=500,
-        help = "dpi value for k2pdfopt reflow text")
-
+    # --------
     parser.add_argument("-md","--markdown", 
         action='store_true',
 	    default=False,
         help = "re-crop pdf based on .md file")
 
+    parser.add_argument("-k", "--kdpi",
+        type=int,
+        default=500,
+        help = "dpi value for k2pdfopt reflow text")
+    
     # Read arguments from command line
     args = parser.parse_args()
     
