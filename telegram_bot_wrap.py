@@ -52,7 +52,7 @@ class PulverizerBot():
 
     ################################
     def help_command(self, update, context):
-        context.bot.send_message(chat_id=update.message.chat_id, text="I'm a Kindle bot. You can use me to\n\n 1. convert a `.epub` file to `.mobi` format and then send it to your kindle:\n\t\t 1) send a `.epub` file to me;\n\t\t 2) use command below to send to your kindle: `/eps + people_code`\t(/eps - 'ep'ub + 's'end, example: `/eps s`)\n\n 2. send a `.pdf` file to me and convert it to suitable size for kindle\n\t\t 1) `/pdfs people_code pdf_name` - send pdf with `pdf_name` to kindle with `people_code` (example: `/pdfs s 2017_geoscience`)\n\t\t 2) `/sdc margins separation_lines` - convert `ScienceDirect` thesis paper to kindle size (example: `/sdc 10,10,590,739 70,300,535`) and\n\t\t  `/k2 options` - a more general command (example: `/k2 -dev kp3 -idpi 420 -odpi 420 -fc- -bpc 1 -col 1 -m 0,0.8,0,0.8 -p 2-3`)\n\t\t 3) `/spch` - check separation line for `ScienceDirect` thesis\n\n\tIf you want to clear all your data, just type `/clear`\n\n\tfor your `people_code`, please contact @dokosho.\n", parse_mode=telegram.ParseMode.MARKDOWN)
+        context.bot.send_message(chat_id=update.message.chat_id, text="I'm a page layout analysis bot (for pdf document - reading on Kindle Paperwhite 3 device).\n\n\tIf you want to remove all your data, just type `/rm`\n\n\tIf you have any questions, please contact @hk_tobeno1.\n", parse_mode=telegram.ParseMode.MARKDOWN)
             # text="*bold* _italic_ `fixed width font` [link](http://google.com).", parse_mode=telegram.ParseMode.MARKDOWN
     ################################
     def start(self, update, context):
@@ -107,11 +107,13 @@ class PulverizerBot():
         print(convert_parameter)
         if convert_parameter!=None:
             run_python_script( f"{self.pulverizerFile} {self.pdfPath} {convert_parameter}" )
-
-        box_pdfname = self.pdfPath.replace('.pdf', '_box.pdf')
-        context.bot.send_document(chat_id=update.message.chat_id, document=open(box_pdfname, 'rb') )
+        update.message.reply_text(text="Page layout analysis - complete!")
+    # ------------
+    def send_box_md_files(self, update, context):        
         self.mdPath = self.pdfPath.replace('.pdf', '.md')
+        box_pdfname = self.pdfPath.replace('.pdf', '_box.pdf')
         context.bot.send_document(chat_id=update.message.chat_id, document=open(self.mdPath, 'rb') )
+        context.bot.send_document(chat_id=update.message.chat_id, document=open(box_pdfname, 'rb') )
     ################################################################
     def md_crop(self, update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
@@ -130,12 +132,11 @@ class PulverizerBot():
         xk_filepath = self.pdfPath.replace(".pdf", "_xk.pdf")
         context.bot.send_document(chat_id=update.message.chat_id, document=open(xk_filepath, 'rb') )
     ################################################################
-    def rm_files(self, update, context, replyTxt=True):
+    def rm_files(self, update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
 
         shutil.rmtree(self.workFolder)
-        if replyTxt==True:
-            update.message.reply_text( text="All your data is deleted!" )
+        update.message.reply_text( text="All your data is deleted!" )
         self.pdfPath=""
     ################################################################
     def list_files(self, update, context):
@@ -185,9 +186,7 @@ class PulverizerBot():
         dispatcher.add_handler(download_handler)
 
         # functions
-        rn_handler = CommandHandler('rn', self.rename_pdf)
-        dispatcher.add_handler(rn_handler)
-
+        # core
         pl_handler = CommandHandler('pl', self.plas)
         dispatcher.add_handler(pl_handler)
 
@@ -197,12 +196,15 @@ class PulverizerBot():
         xk_handler = CommandHandler('xk', self.xk_file)
         dispatcher.add_handler(xk_handler)
 
+        # file manipulation
+        pp_handler = CommandHandler('pp', self.send_box_md_files)
+        dispatcher.add_handler(pp_handler)
+        rn_handler = CommandHandler('rn', self.rename_pdf)
+        dispatcher.add_handler(rn_handler)
         rm_handler = CommandHandler('rm', self.rm_files)
         dispatcher.add_handler(rm_handler)
-
         ls_handler = CommandHandler('ls', self.list_files)
         dispatcher.add_handler(ls_handler)
-
         send_handler = CommandHandler('sn', self.send_files)
         dispatcher.add_handler(send_handler)
         # --------------

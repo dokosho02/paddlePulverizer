@@ -68,11 +68,14 @@ The same pattern (arguments) is applied to all `yourfile.pdf`.
 
 ### Telegram bot
 
+settings on windows
 ```cmd
 setx PULVERIZER_BOT_TOKEN "your bot token"
 ```
 
+#### Functions
 
+##### Basics of Telegram Bot
 ```sh
 /start
 ```
@@ -80,18 +83,24 @@ setx PULVERIZER_BOT_TOKEN "your bot token"
 ```sh
 /help
 ```
+##### Core
 
 ```sh
 /pl
 ```
 
 ```sh
-/rn
+/pp
 ```
-
 
 ```sh
 /md
+```
+
+
+##### file manipulations
+```sh
+/rn
 ```
 
 
