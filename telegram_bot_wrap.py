@@ -119,8 +119,9 @@ class PulverizerBot():
     def send_box_md_files(self, update, context):        
         self.mdPath = self.pdfPath.replace('.pdf', '.md')
         box_pdfname = self.pdfPath.replace('.pdf', '_box.pdf')
-
-        [context.bot.send_document(chat_id=update.message.chat_id, document=open(fl, 'rb') ) for fl in [self.mdPath, box_pdfname] ]
+        
+        context.bot.send_document(chat_id=update.message.chat_id, document=open(self.mdPath, 'rb') )
+        context.bot.send_document(chat_id=update.message.chat_id, document=open(box_pdfname, 'rb') )
     ################################################################
     def md_crop(self, update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
