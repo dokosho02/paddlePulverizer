@@ -30,8 +30,6 @@ and then reflow the pdf document for reading on kindle paperwhite 3 using [`k2pd
 
 - Telegram bot
   - [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot)
-  - [`magic`](https://github.com/ahupp/python-magic) - file type identification
-    - `pip install python-magic-bin==0.4.14` - [GitHub discussion](https://github.com/Yelp/elastalert/issues/1927/)
 ### Other dependencies
 - `poppler` - the dependency of `pdf2image` package
   - [for windows](https://blog.alivate.com.au/poppler-windows/)
@@ -116,5 +114,6 @@ setx PULVERIZER_BOT_TOKEN "your bot token"
 It is very difficult to pack the source code together via `pyinstaller` due to the complex structures of `paddle(ocr)` package(s).
 
 ## Issues
-
-- `opencv-python-headless==4.1.2.30` [stackoverflow discussion](https://stackoverflow.com/questions/70537488/cannot-import-name-registermattype-from-cv2-cv2)
+- [ ] the bottom of rectangle shapes should be lower
+- [ ] `pdf-annotate` - rectangle shapes have some drift but the pdf cropping is correct
+- [x] `opencv-python-headless==4.1.2.30` [stackoverflow discussion](https://stackoverflow.com/questions/70537488/cannot-import-name-registermattype-from-cv2-cv2)
