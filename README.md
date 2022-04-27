@@ -19,7 +19,7 @@ and then reflow the pdf document for reading on kindle paperwhite 3 using [`k2pd
   - `opencv_contrib_python>=4.4.0.46`
   - `opencv-python-headless==4.1.2.30`
   - `Pillow`
-- [`Paddle series`](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.2/ppstructure/README_ch.md)
+- [`Paddle series`](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.2/ppstructure/README_ch.md) - It seems that these packages need to be installed individually.
   - `PaddlePaddle`
   - `Layout-Parser`
   - `PaddleOCR`
