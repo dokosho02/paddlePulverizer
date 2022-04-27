@@ -66,6 +66,8 @@ The same pattern (arguments) is applied to all `yourfile.pdf`.
 
 ### Telegram bot
 
+try [this bot](https://t.me/pulverize_bot) on Telegram
+
 settings on windows
 ```cmd
 setx PULVERIZER_BOT_TOKEN "your bot token"
