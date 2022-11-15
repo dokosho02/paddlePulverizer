@@ -14,15 +14,14 @@ import shutil
 
 ################################
 
-# sho_kindle_bot_token = "1883219374:AAE9s3nKxE75sRFNtN-s9saFO4IWv8hrh0Q"
 # pulverizerFile = "pulverizer.py"
 
 
 
-def getpdfName(pdfFilename, file_path):
-    if pdfFilename=="":
-        pdfFilename = file_path
-    return pdfFilename
+# def getpdfName(pdfFilename, file_path):
+#     if pdfFilename=="":
+#         pdfFilename = file_path
+#     return pdfFilename
 ################################
 def get_platform():
     SysName = platform.system()
@@ -48,7 +47,9 @@ class PulverizerBot():
         self.botDowloadFolder = "bot"
         self.pulverizerFile = "pulverizer.py"
         self.workFolder = ""
-        self.pdfPath = ""
+
+        # core
+        self.currentPdfPath = ""
 
     ################################
     def help_command(self, update, context):
@@ -88,7 +89,7 @@ class PulverizerBot():
 
         file_mame, file_extension = os.path.splitext(file_path)
         if file_extension== ".pdf":
-            self.pdfPath=file_path
+            self.currentPdfPath=file_path
         elif file_extension== ".md":
             self.mdPath =file_path
         update.message.reply_text(text=f"You have sent me a {file_extension} file." )
@@ -102,8 +103,8 @@ class PulverizerBot():
             self.new_pdfPath = os.path.join( self.workFolder, f"{convert_parameter}.pdf")
 
             try:
-                os.rename(self.pdfPath, self.new_pdfPath)
-                self.pdfPath = self.new_pdfPath
+                os.rename(self.currentPdfPath, self.new_pdfPath)
+                self.currentPdfPath = self.new_pdfPath
             except:
                 pass
     ################################################################
@@ -113,12 +114,12 @@ class PulverizerBot():
         convert_parameter = ' '.join(context.args)
         print(convert_parameter)
         if convert_parameter!=None:
-            run_python_script( f"{self.pulverizerFile} {self.pdfPath} {convert_parameter}" )
+            run_python_script( f"{self.pulverizerFile} {self.currentPdfPath} {convert_parameter}" )
         update.message.reply_text(text="Page layout analysis - complete!")
     # ------------
     def send_box_md_files(self, update, context):        
-        self.mdPath = self.pdfPath.replace('.pdf', '.md')
-        box_pdfname = self.pdfPath.replace('.pdf', '_box.pdf')
+        self.mdPath = self.currentPdfPath.replace('.pdf', '.md')
+        box_pdfname = self.currentPdfPath.replace('.pdf', '_box.pdf')
         
         context.bot.send_document(chat_id=update.message.chat_id, document=open(self.mdPath, 'rb') )
         context.bot.send_document(chat_id=update.message.chat_id, document=open(box_pdfname, 'rb') )
@@ -129,15 +130,15 @@ class PulverizerBot():
         convert_parameter = ' '.join(context.args)
         print(convert_parameter)
         if convert_parameter!=None:
-            run_python_script( f"{self.pulverizerFile} {self.pdfPath} -md {convert_parameter}" )
+            run_python_script( f"{self.pulverizerFile} {self.currentPdfPath} -md {convert_parameter}" )
 
-        annotate_pdfname = self.pdfPath.replace('.pdf', '_annt.pdf')
+        annotate_pdfname = self.currentPdfPath.replace('.pdf', '_annt.pdf')
         context.bot.send_document(chat_id=update.message.chat_id, document=open(annotate_pdfname, 'rb') )
     ################################################################
     def xk_file(self, update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
 
-        xk_filepath = self.pdfPath.replace(".pdf", "_xk.pdf")
+        xk_filepath = self.currentPdfPath.replace(".pdf", "_xk.pdf")
         context.bot.send_document(chat_id=update.message.chat_id, document=open(xk_filepath, 'rb') )
     ################################################################
     def rm_files(self, update, context):
@@ -145,7 +146,7 @@ class PulverizerBot():
 
         shutil.rmtree(self.workFolder)
         update.message.reply_text( text="All your data is deleted!" )
-        self.pdfPath=""
+        self.currentPdfPath=""
     ################################################################
     def list_files(self, update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
@@ -173,6 +174,18 @@ class PulverizerBot():
             for fl in files:
                 file_to_send = os.path.join(self.workFolder, fl)
                 context.bot.send_document(chat_id=update.message.chat_id, document=open(file_to_send, 'rb') )
+
+    def setCurrentPdf(self,update, context):
+        self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
+
+        convert_parameter = ' '.join(context.args)
+        print(convert_parameter)
+        if convert_parameter!=None:
+            self.currentPdfPath = os.path.join( self.workFolder, f"{convert_parameter}.pdf")
+    
+    def getCurrentPdf(self,update, context):
+        self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
+        update.message.reply_text( text=self.currentPdfPath )
 
 ################################
 
@@ -207,6 +220,11 @@ class PulverizerBot():
         # file manipulation
         pp_handler = CommandHandler('pp', self.send_box_md_files)
         dispatcher.add_handler(pp_handler)
+        gp_handler = CommandHandler('gp', self.setCurrentPdf)
+        dispatcher.add_handler(gp_handler)
+        sp_handler = CommandHandler('sp', self.getCurrentPdf)
+        dispatcher.add_handler(sp_handler)
+
         rn_handler = CommandHandler('rn', self.rename_pdf)
         dispatcher.add_handler(rn_handler)
         rm_handler = CommandHandler('rm', self.rm_files)
