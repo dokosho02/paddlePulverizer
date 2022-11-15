@@ -220,9 +220,9 @@ class PulverizerBot():
         # file manipulation
         pp_handler = CommandHandler('pp', self.send_box_md_files)
         dispatcher.add_handler(pp_handler)
-        gp_handler = CommandHandler('gp', self.setCurrentPdf)
+        gp_handler = CommandHandler('gp', self.getCurrentPdf)
         dispatcher.add_handler(gp_handler)
-        sp_handler = CommandHandler('sp', self.getCurrentPdf)
+        sp_handler = CommandHandler('sp', self.setCurrentPdf)
         dispatcher.add_handler(sp_handler)
 
         rn_handler = CommandHandler('rn', self.rename_pdf)
