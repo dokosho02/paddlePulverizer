@@ -68,14 +68,19 @@ The same pattern (arguments) is applied to all `yourfile.pdf`.
 
 try [this bot](https://t.me/pulverize_bot) on Telegram
 
-settings on windows
+#### Settings
+##### windows
 ```cmd
 setx PULVERIZER_BOT_TOKEN "your bot token"
 ```
+##### macOS
+
+##### Linux
+
 
 #### Functions
 
-##### Basics of Telegram Bot
+#### Basics of Telegram Bot
 ```sh
 /start
 ```
@@ -86,29 +91,36 @@ setx PULVERIZER_BOT_TOKEN "your bot token"
 ##### Core
 
 ```sh
-/pl
+/pl    # page layout analysis
 ```
 
 ```sh
-/pp
+/pp    # get the .md and box pdf file
 ```
 
 ```sh
-/md
+/md    # reflow
 ```
 
 
 ##### file manipulations
 ```sh
-/rn
+/gp    # get current pdf file name
+/sp    # set current pdf file name
 ```
 
+```sh
+/ls    # list current files in your folder
+/xk    # send the final reflowed pdf file
+/rm    # clear your folder
+```
 
 ```sh
-/ls
-/xk
-/rm
-/sn
+# send file with file name
+/sn yourfilepath  
+
+# rename?
+/rn
 ```
 
 ## Problem

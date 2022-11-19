@@ -19,14 +19,14 @@ class PdfDocument():
         fileName,
         startPage=1,
         endPage  =1, 
-        columns  =2, 
+        columns  =2,
         pageDividerPercent=65,
         pageColumnPercents=49, 
         k2dpi = 500,
         twoSides=False):
 
     
-        self.path = str(fileName)
+        self.path        = str(fileName)
         self.startPage   = int(startPage)
         self.endPage     = int(endPage)
 
@@ -39,6 +39,7 @@ class PdfDocument():
         self.twoSides = twoSides
         self.k2dpi = k2dpi
 
+        # definitions
         # output folders
         self.fileFolder     = (self.path).replace('.pdf', '')
         self.originalFolder = os.path.join(self.fileFolder,'original')
@@ -90,12 +91,12 @@ class PdfDocument():
         self.pdfPageNo = self.inputPDF.getNumPages()
         inFile.close()
 
-        logger.success('{} -- Page number  recognized by code'.format(self.pdfPageNo) )
+        logger.success(f"{self.pdfPageNo} -- Page number  recognized by code" )
 
         # print('Block parameter = {}'.format(self.dilation) )
-        logger.debug('Page coloumn(s) = {}'.format(self.columns) )
-        logger.debug('Page divider percent = {}'.format(self.pageDividerPercent) )
-        logger.debug('Page column percents = {}'.format(self.pageColumnPercents) )
+        logger.debug(f"Page coloumn(s) = {self.columns}")
+        logger.debug(f"Page divider percent = {self.pageDividerPercent}")
+        logger.debug(f"Page column percents = {self.pageColumnPercents}")
     # ------------------------
     def createFolders(self):
         parentFolder = self.fileFolder
@@ -104,7 +105,7 @@ class PdfDocument():
             os.makedirs(parentFolder)
             
             # create folders
-        for folder in ['original','cut','pagepdf' ]:
+        for folder in ['original','cut','pagepdf']:
             childFolder = os.path.join(parentFolder,folder)
             if not os.path.exists(childFolder):
                 os.makedirs(childFolder)
@@ -114,7 +115,7 @@ class PdfDocument():
             if not os.path.exists(childFolder):
                 os.makedirs(childFolder)
 
-        logger.info( "pagepdf folders created" )
+        logger.info("pagepdf folders created")
 
     def createLog(self):
         pass
@@ -123,6 +124,8 @@ class PdfDocument():
             # delete pdf folder
         print("\nremove the pdf folder and its contents\n")
         shutil.rmtree(self.fileFolder)
+
+            # delete final output files
         for fl in self.finalFiles:
             try:
                 os.remove(fl)
@@ -131,13 +134,14 @@ class PdfDocument():
                 print(f"No {fl}, skipping...")
     # ----------------------
     def convert2Image(self):
-        print( '{0} pages will be processed in this session...\n'.format(self.endPage - self.startPage +1 ) )
+        processedPageNo = self.endPage - self.startPage +1 
+        print( f"{processedPageNo} pages will be processed in this session...\n" )
 
         # read pdf and convert to images
         for i in tqdm( range( self.startPage-1, self.endPage ), desc="converting into images..." ):
             page = convert_from_path(self.path, first_page= i + 1 , last_page = i + 1)
-            imagePath = '{0}.png'.format( str(i+1).zfill(digital_number) )
-            originalImagePath = os.path.join( self.originalFolder, imagePath  )
+            imagePath = f"{str(i+1).zfill(digital_number)}.png"
+            originalImagePath = os.path.join(self.originalFolder, imagePath)
             page[0].save(originalImagePath)            # save pdf page as image
             self.originalImagePaths.append(originalImagePath)
     # ----------------------
