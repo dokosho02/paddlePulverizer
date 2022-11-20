@@ -124,6 +124,10 @@ class PdfDocument():
                             )
 
                             # text
+
+                            if (fontSize > areas[3]-areas[1]):
+                                fontSize = areas[3]-areas[1]
+                                
                             annotator.add_annotation(
                                 'text',
                                 location = Location(
@@ -140,7 +144,7 @@ class PdfDocument():
                                 )
                             )
 
-                            print(f"{fontSize} - {areas[2]-areas[0]} - {areas[3]-areas[1]}")
+                            # print(f"{fontSize} - {areas[2]-areas[0]} - {areas[3]-areas[1]}")
                             count += 1
                     singlePdfPage.cropBlocksByPixel(areaInfo, self.pagepdfFolder, bl)
 
