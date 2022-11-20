@@ -16,6 +16,8 @@ class PdfPage():
         self.pageNumber = pageNo
         # self.pdfCropArea = []
 
+        self.mdInfo = []
+        
         in_f = open(self.PDFpath, "rb")
         input1 = PdfFileReader(in_f)
         singlePage = input1.getPage(self.pageNumber-1)   # get pdf page by pagenumber

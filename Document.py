@@ -1,15 +1,13 @@
 from PyPDF4 import PdfFileReader, PdfFileMerger
 from pdf2image import convert_from_path
+from pdf_annotate import PdfAnnotator, Location, Appearance
 
 import os, glob, subprocess, shutil, platform
 from os.path import splitext, basename, dirname
-import codecs
 
+import codecs
 from loguru import logger
 from tqdm import tqdm
-
-
-from pdf_annotate import PdfAnnotator, Location, Appearance
 
 from pdfPage import PdfPage
 from pic2pdf import image_to_pdf
@@ -23,7 +21,7 @@ thickness = 1
 # fontSize = 40
 
 # a PDF is a PdfDocument Object
-class PdfDocument():
+class Document():
     def __init__(self,
         fileName,
         startPage=1,
@@ -157,22 +155,25 @@ class PdfDocument():
         outpath_annotated = self.path.replace(".pdf", "_annt.pdf")
         annotator.write(outpath_annotated)
     # -----------------------------------------
-    def cropFromScratch(self):        
-        # create log file
-        f = codecs.open(self.logPath,"w",encoding='utf-8')
-        f.close()
+    def cropFromScratch(self):
     
         print("\nThere is no log file.\nStarting to cut the pdf document with plas (page layout analysis)...\n")
 
         self.convert2Image()
+
         with tqdm(total=len(self.originalImagePaths), desc="cutting with AI tech...") as pbar:
             for i in range(len(self.originalImagePaths)):
                 self.processPage(i)
                 pbar.update(1)
-        
         pbar.close()
+
+        # print(self.mdInfo)
+        # arrange md info
+        self.mdInfo = sorted(self.mdInfo, key=lambda x: x[0][0])
+
         # ----
         image_to_pdf(self.path)
+        self.writeLog2md()
     # -----------------------------------------
     def processPage(self, i):
         # start to process images
@@ -192,21 +193,26 @@ class PdfDocument():
 
         # pdf
         singlePdfPage = PdfPage(self.path, pageNo)    # back project to pdf page
+        singlePdfPage.mdInfo = []
         # calculate and cut
         infoGroup = [imgPage.textInfoOrdered, imgPage.tableInfoOrdered, imgPage.figureInfoOrdered ]
         labelGroup = ["x", "b", "f"]
         for (bi, bl) in zip( infoGroup, labelGroup):
             areaInfo = []
             # write to log file
-            f = codecs.open(self.logPath,"a",encoding='utf-8')
+            # f = codecs.open(self.logPath,"a",encoding='utf-8')
             for xywh in bi:
                 areas = singlePdfPage.calculatePDFCropArea(xylu,xywh)
                 areaInfo.append( areas )
-                f.write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\n".format(pageNo+1, bl, areas[0],areas[1],areas[2],areas[3] ) )
+                temp = [pageNo+1, bl, areas[0],areas[1],areas[2],areas[3]]
+                singlePdfPage.mdInfo.append(temp)
+                # f.write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\n".format(pageNo+1, bl, areas[0],areas[1],areas[2],areas[3] ) )
+
             # page No - label - 
             singlePdfPage.cropBlocksByPixel(areaInfo, self.pagepdfFolder, bl)
 
-            f.close()
+            # f.close()
+        self.mdInfo.append(singlePdfPage.mdInfo)
     # ----------------------------------------
     def metadata(self):
         print(f'PDF Name -- {self.path}')
@@ -306,6 +312,18 @@ class PdfDocument():
             originalImagePath = os.path.join(self.originalFolder, imagePath)
             page[0].save(originalImagePath)            # save pdf page as image
             self.originalImagePaths.append(originalImagePath)
+    # ----------------------
+    def writeLog2md(self):
+        # create log file
+        finalString = ""
+        f = codecs.open(self.logPath,"w",encoding='utf-8')
+        for pageInfo in self.mdInfo:
+            for blockInfo in pageInfo:
+                pageNo, label, x1, y1, x2, y2 = blockInfo
+                finalString +=f"{pageNo}\t{label}\t{x1}\t{y1}\t{x2}\t{y2}\n"
+        
+        f.write( finalString.strip() )
+        f.close()
     # ----------------------
     def mergeAndReflow(self):
         dpi = self.k2dpi

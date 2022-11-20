@@ -2,7 +2,7 @@
 import argparse
 from datetime import datetime
 # from cut_merge_k2 import cutAndMerge
-from pdfDocument import PdfDocument
+from Document import Document
 
 
 col_div_percents = [
@@ -91,7 +91,7 @@ def cutAndMerge(pdfName, startPage, endPage, col, k2dpi, mdtf):
             pcp = para[2]
 
     # doc definition
-    pdoc = PdfDocument(
+    pdoc = Document(
         fileName = pdfName,
         startPage= startPage,       # 112
         endPage  = endPage,       # 365
