@@ -104,6 +104,7 @@ class PdfDocument():
                         page_ant = int(pageNo_str)-1
                         if ( page_ant == i+startPage-1) and (blockType==bl):
                             areas = [xs, ys, xe, ye]
+                            self.annotateFontsize = 40
                             for j in range( len(areas) ):
                                 areas[j] = float(areas[j])
                             areaInfo.append(areas)
