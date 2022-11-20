@@ -22,7 +22,7 @@ startWord = """I'm ready to work.\nYou can use `/help` command to learn how to u
 helpWord = """
         I am a page layout analysis bot (for pdf document - reading on Kindle Paperwhite 3 device).
         If you want to remove all your data, just type `/rm`.
-        If you have any questions, please contact `@hk\\_tobeno1`,
+        If you have any questions, please contact `@hk_tobeno1`,
         or visit the [website](https://github.com/dokosho02/paddlePulverizer).
         """
 # "I'm a dictionary bot.\n\n\tIf you have any questions, please contact @hk\\_tobeno1."
@@ -187,13 +187,13 @@ class PulverizerBot(tgBot):
         self.dispatcher.add_handler(download_handler)
 
         adv =[
-            ["pl", self.plas],
+            ["pl", self.plas],    # core
             ["md", self.md_crop],
             ["xk", self.xk_file],
             ["pp", self.send_box_md_files],
-            ["gp", self.getCurrentPdf],
+            ["gp", self.getCurrentPdf],    # settings
             ["sp", self.setCurrentPdf],
-            ["rn", self.rename_pdf],
+            ["rn", self.rename_pdf],       # file
             ["rm", self.rm_files],
             ["ls", self.list_files],
             ["sn", self.send_files],
@@ -201,39 +201,10 @@ class PulverizerBot(tgBot):
 
         for a in adv:
             self.pairs.append(a)
-        # # functions
-        # # core
-        # pl_handler = CommandHandler('pl', self.plas)
-        # dispatcher.add_handler(pl_handler)
 
-        # md_handler = CommandHandler('md', self.md_crop)
-        # dispatcher.add_handler(md_handler)
-
-        # xk_handler = CommandHandler('xk', self.xk_file)
-        # dispatcher.add_handler(xk_handler)
-
-        # # file manipulation
-        # pp_handler = CommandHandler('pp', self.send_box_md_files)
-        # dispatcher.add_handler(pp_handler)
-        # gp_handler = CommandHandler('gp', self.getCurrentPdf)
-        # dispatcher.add_handler(gp_handler)
-        # sp_handler = CommandHandler('sp', self.setCurrentPdf)
-        # dispatcher.add_handler(sp_handler)
-
-        # rn_handler = CommandHandler('rn', self.rename_pdf)
-        # dispatcher.add_handler(rn_handler)
-        # rm_handler = CommandHandler('rm', self.rm_files)
-        # dispatcher.add_handler(rm_handler)
-        # ls_handler = CommandHandler('ls', self.list_files)
-        # dispatcher.add_handler(ls_handler)
-        # send_handler = CommandHandler('sn', self.send_files)
-        # dispatcher.add_handler(send_handler)
-        # # --------------
-        # updater.start_polling()
 
 # --------------------------------------
 def main():
-
     plvbot = PulverizerBot(token,startWord, helpWord)
     plvbot.run()
 # --------------------------------------

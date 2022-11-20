@@ -18,6 +18,7 @@ from pic2pdf import image_to_pdf
 
 digital_number = 3    # for image and pdf, digital number
 
+# for annotation
 boxColors = [ (0,0,1), (1, 0, 0), (0,1,0)]    # BRG, x-b-f
 thickness = 1
 
@@ -75,11 +76,8 @@ class PdfDocument():
             # finish
     # -----------------------------------------
     def cropFromLog(self):
-        # self.removeFiles()
-        # self.createFolders()
-
         # read log file
-        f = codecs.open(doc.logPath,"r",encoding='utf-8')
+        f = codecs.open(self.logPath,"r",encoding='utf-8')
         g = f.readlines()
         f.close()
 
@@ -151,10 +149,7 @@ class PdfDocument():
         annotator.write(outpath_annotated)
 
     # -----------------------------------------
-    def cropFromScratch(self):
-        # self.removeFiles()
-        # self.createFolders()
-        
+    def cropFromScratch(self):        
         # create log file
         f = codecs.open(self.logPath,"w",encoding='utf-8')
         f.close()
