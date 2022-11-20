@@ -4,16 +4,16 @@ import shutil
 
 # customize
 from pdfDocument import PdfDocument
-from pdfPage import PdfPage
+# from pdfPage import PdfPage
 
-from pic2pdf import image_to_pdf
+# from pic2pdf import image_to_pdf
 # import _thread
-from pdf_annotate import PdfAnnotator, Location, Appearance
+# from pdf_annotate import PdfAnnotator, Location, Appearance
 
 
 
-thickness = 1
-boxColors = [ (0,0,1), (1, 0, 0), (0,1,0)]    # BRG, x-b-f
+# thickness = 1
+# boxColors = [ (0,0,1), (1, 0, 0), (0,1,0)]    # BRG, x-b-f
 
 """
 # 380 - 450 - 500
@@ -21,7 +21,7 @@ boxColors = [ (0,0,1), (1, 0, 0), (0,1,0)]    # BRG, x-b-f
  -x -dev kp3 -idpi 450 -odpi 450 -fc- -j 0 -col 1 -bpc 2 -rt 0
  -x -dev kp3 -idpi 380 -odpi 380 -fc- -j 0 -col 1 -bpc 2 -rt 0
 
-300 for 地球物理学报 
+300 for 地球物理学报
 """
 # ------------------------
 # ScienceDirect
@@ -34,7 +34,7 @@ col_div_percents = [
 
 
 
-def cutAndMerge(pdfName,startPage,endPage, col, k2dpi, mdtf):
+def cutAndMerge(pdfName, startPage, endPage, col, k2dpi, mdtf):
     # parameter initilization
     pdp, pcp = col_div_percents[0][1], col_div_percents[0][2]
     for para in col_div_percents:
@@ -50,41 +50,43 @@ def cutAndMerge(pdfName,startPage,endPage, col, k2dpi, mdtf):
         columns  = col   ,   # 2
         pageDividerPercent = pdp ,   #    65; 35/8
         pageColumnPercents = pcp ,   #    49, [38,69], [26,53,75], [25,38,50,68,76,88]
-        k2dpi = k2dpi,
+        k2dpi  = k2dpi,
+        mdFile = mdtf,
         twoSides=False
-        )
+    )
+    pdoc.run()
+
     # --------------------------------- 
-
-    if mdtf:
-        if ( os.path.exists(pdoc.logPath) ):
-            print("\na log file exists!\n")
-            cropFromLog(pdoc)
-            pdoc.mergeAndReflow()
-            # finish
-    else:
-        
-        pdoc.removeFiles()
-        pdoc.createFolders()
-
-        # create log file
-        f = codecs.open(pdoc.logPath,"w",encoding='utf-8')
-        f.close()
     
-        # cut using plas
-        # cutOrNot = input("\nWould you like to cut the pdf document with plas (page layout analysis)?\n(y/n) -- ")
-        cutOrNot = "y"
-        if (cutOrNot == "y"):
-            print("\nThere is no log file.\nStarting to cut the pdf document with plas (page layout analysis)...\n")
-            # 1 convert pdf into images
-            pdoc.convert2Image()
-            imgPaths = pdoc.originalImagePaths
+    # if mdtf:
+    #     if ( os.path.exists(pdoc.logPath) ):
+    #         print("\na log file exists!\n")
+    #         cropFromLog(pdoc)
+    #         pdoc.mergeAndReflow()
+    #         # finish
+    # else:
+    #     pdoc.removeFiles()
+    #     pdoc.createFolders()
+
+    #     # create log file
+    #     f = codecs.open(pdoc.logPath,"w",encoding='utf-8')
+    #     f.close()
+    
+    #     # cut using plas
+    #     # cutOrNot = input("\nWould you like to cut the pdf document with plas (page layout analysis)?\n(y/n) -- ")
+    #     cutOrNot = "y"
+    #     if (cutOrNot == "y"):
+    #         print("\nThere is no log file.\nStarting to cut the pdf document with plas (page layout analysis)...\n")
+    #         # 1 convert pdf into images
+    #         pdoc.convert2Image()
+    #         imgPaths = pdoc.originalImagePaths
             
-            print("\n")
-            with tqdm(total=len(imgPaths), desc="cutting with AI tech...") as pbar:
-                for i in range(len(imgPaths)):
-                    processPage(i, imgPaths, pdoc)
-                    pbar.update(1)
-                """
+    #         print("\n")
+    #         with tqdm(total=len(imgPaths), desc="cutting with AI tech...") as pbar:
+    #             for i in range(len(imgPaths)):
+    #                 processPage(i, imgPaths, pdoc)
+    #                 pbar.update(1)
+"""
                 # for j in range(0, n):
                 if (i%n==0):
                     _thread.start_new_thread( processPage, (i, imgPaths, pdoc) )
@@ -92,8 +94,8 @@ def cutAndMerge(pdfName,startPage,endPage, col, k2dpi, mdtf):
                         _thread.start_new_thread( processPage, (i+1, imgPaths, pdoc) )
                     # print( "page {} on thread {}".format(i+1, j+ 1)   )
                         eval( '_thread.start_new_thread( processPage, (i, imgPaths, pdoc) )' )
-                        # processPage(i, imgPaths, pdoc)"""
-                """
+                        # processPage(i, imgPaths, pdoc)
+                
                 # create an object of ImagePage
                 imgPage = ImagePage(imgPaths[i], i+1 )
 
@@ -113,12 +115,10 @@ def cutAndMerge(pdfName,startPage,endPage, col, k2dpi, mdtf):
                         areas = singlePdfPage.calculatePDFCropArea(xylu,xywh)
                         areaInfo.append( areas )
                     singlePdfPage.cropBlocksByPixel(areaInfo, pdoc.pagepdfFolder, bl)
-                    """
-
-            
-            pbar.close()
+"""           
+            # pbar.close()
         # pic to pdf for all in original folder
-        image_to_pdf(pdoc.path)
+        # image_to_pdf(pdoc.path)
     # -------------------------------------------------
 
 # -------------------------------------

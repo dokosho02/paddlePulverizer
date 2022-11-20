@@ -7,6 +7,4 @@ pdf2image
 Pillow
 PyPDF4
 pdf-annotate
-pytesseract
-opencv-python-headless==4.1.2.30
 python-telegram-bot

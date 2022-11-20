@@ -3,6 +3,8 @@ import argparse
 from datetime import datetime
 from cut_merge_k2 import cutAndMerge
 
+# commandline
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -80,5 +82,5 @@ if __name__ == '__main__':
     end = datetime.now()
     timeDuration = str(end - start).zfill(4)
     print(end)
-    print( 'Time cost -- {}'.format(timeDuration) )
+    print(f"Time cost -- {timeDuration}")
 

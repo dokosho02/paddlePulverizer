@@ -11,13 +11,21 @@ import subprocess
 from loguru import logger
 import shutil
 
+from tgBot import tgBot
 
 ################################
 
 # pulverizerFile = "pulverizer.py"
 
-
-
+token = os.environ["PULVERIZER_BOT_TOKEN"]
+startWord = """I'm ready to work.\nYou can use `/help` command to learn how to use me."""
+helpWord = """
+        I am a page layout analysis bot (for pdf document - reading on Kindle Paperwhite 3 device).
+        If you want to remove all your data, just type `/rm`.
+        If you have any questions, please contact `@hk\\_tobeno1`,
+        or visit the [website](https://github.com/dokosho02/paddlePulverizer).
+        """
+# "I'm a dictionary bot.\n\n\tIf you have any questions, please contact @hk\\_tobeno1."
 # def getpdfName(pdfFilename, file_path):
 #     if pdfFilename=="":
 #         pdfFilename = file_path
@@ -41,34 +49,17 @@ def run_python_script(pyFile):
     subprocess.call(pyShell, shell=True)
 ################################
 
-class PulverizerBot():
-    def __init__(self):
-        self.token = os.environ['PULVERIZER_BOT_TOKEN']
+class PulverizerBot(tgBot):
+    def __init__(self, token, startWord, helpWord):
+        super().__init__(token, startWord, helpWord)
+        # self.token = os.environ['PULVERIZER_BOT_TOKEN']
+
         self.botDowloadFolder = "bot"
         self.pulverizerFile = "pulverizer.py"
         self.workFolder = ""
 
         # core
         self.currentPdfPath = ""
-
-    ################################
-    def help_command(self, update, context):
-        descrip = """
-        I am a page layout analysis bot (for pdf document - reading on Kindle Paperwhite 3 device).
-        If you want to remove all your data, just type `/rm`.
-        If you have any questions, please contact `@hk_tobeno1`.
-        """
-
-        context.bot.send_message(
-            chat_id=update.message.chat_id,
-            text=descrip,
-            parse_mode=telegram.ParseMode.MARKDOWN
-            )
-            # text="*bold* _italic_ `fixed width font` [link](http://google.com).", parse_mode=telegram.ParseMode.MARKDOWN
-    ################################
-    def start(self, update, context):
-        self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
-        context.bot.send_message(chat_id=update.message.chat_id, text="I'm ready to work.\nYou can use `/help` command to learn how to use me.", parse_mode=telegram.ParseMode.MARKDOWN)
     ################################
     def file_identification(self, update, context):
         # create folder
@@ -189,57 +180,62 @@ class PulverizerBot():
 
 ################################
 
-    def startBot(self):
-        updater = Updater(token=self.token, use_context=True)
-        dispatcher = updater.dispatcher
-
-        # command
-
-        # basic - start and help
-        start_handler = CommandHandler('start', self.start)
-        dispatcher.add_handler(start_handler)
-
-        help_handler = CommandHandler('help', self.help_command)
-        dispatcher.add_handler(help_handler)
-
+    def advancedCommands(self):
+    
         # download
         download_handler = MessageHandler(Filters.document, self.file_identification)
-        dispatcher.add_handler(download_handler)
+        self.dispatcher.add_handler(download_handler)
 
-        # functions
-        # core
-        pl_handler = CommandHandler('pl', self.plas)
-        dispatcher.add_handler(pl_handler)
+        adv =[
+            ["pl", self.plas],
+            ["md", self.md_crop],
+            ["xk", self.xk_file],
+            ["pp", self.send_box_md_files],
+            ["gp", self.getCurrentPdf],
+            ["sp", self.setCurrentPdf],
+            ["rn", self.rename_pdf],
+            ["rm", self.rm_files],
+            ["ls", self.list_files],
+            ["sn", self.send_files],
+        ]
 
-        md_handler = CommandHandler('md', self.md_crop)
-        dispatcher.add_handler(md_handler)
+        for a in adv:
+            self.pairs.append(a)
+        # # functions
+        # # core
+        # pl_handler = CommandHandler('pl', self.plas)
+        # dispatcher.add_handler(pl_handler)
 
-        xk_handler = CommandHandler('xk', self.xk_file)
-        dispatcher.add_handler(xk_handler)
+        # md_handler = CommandHandler('md', self.md_crop)
+        # dispatcher.add_handler(md_handler)
 
-        # file manipulation
-        pp_handler = CommandHandler('pp', self.send_box_md_files)
-        dispatcher.add_handler(pp_handler)
-        gp_handler = CommandHandler('gp', self.getCurrentPdf)
-        dispatcher.add_handler(gp_handler)
-        sp_handler = CommandHandler('sp', self.setCurrentPdf)
-        dispatcher.add_handler(sp_handler)
+        # xk_handler = CommandHandler('xk', self.xk_file)
+        # dispatcher.add_handler(xk_handler)
 
-        rn_handler = CommandHandler('rn', self.rename_pdf)
-        dispatcher.add_handler(rn_handler)
-        rm_handler = CommandHandler('rm', self.rm_files)
-        dispatcher.add_handler(rm_handler)
-        ls_handler = CommandHandler('ls', self.list_files)
-        dispatcher.add_handler(ls_handler)
-        send_handler = CommandHandler('sn', self.send_files)
-        dispatcher.add_handler(send_handler)
-        # --------------
-        updater.start_polling()
+        # # file manipulation
+        # pp_handler = CommandHandler('pp', self.send_box_md_files)
+        # dispatcher.add_handler(pp_handler)
+        # gp_handler = CommandHandler('gp', self.getCurrentPdf)
+        # dispatcher.add_handler(gp_handler)
+        # sp_handler = CommandHandler('sp', self.setCurrentPdf)
+        # dispatcher.add_handler(sp_handler)
+
+        # rn_handler = CommandHandler('rn', self.rename_pdf)
+        # dispatcher.add_handler(rn_handler)
+        # rm_handler = CommandHandler('rm', self.rm_files)
+        # dispatcher.add_handler(rm_handler)
+        # ls_handler = CommandHandler('ls', self.list_files)
+        # dispatcher.add_handler(ls_handler)
+        # send_handler = CommandHandler('sn', self.send_files)
+        # dispatcher.add_handler(send_handler)
+        # # --------------
+        # updater.start_polling()
 
 # --------------------------------------
 def main():
-    plvbot = PulverizerBot()
-    plvbot.startBot()
+
+    plvbot = PulverizerBot(token,startWord, helpWord)
+    plvbot.run()
 # --------------------------------------
 if __name__ == '__main__':
     # --------------
