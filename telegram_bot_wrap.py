@@ -25,17 +25,17 @@ helpWord = """
         If you have any questions, please contact `@hk_tobeno1`,
         or visit the [website](https://github.com/dokosho02/paddlePulverizer).
         """
+
 # "I'm a dictionary bot.\n\n\tIf you have any questions, please contact @hk\\_tobeno1."
 # def getpdfName(pdfFilename, file_path):
 #     if pdfFilename=="":
 #         pdfFilename = file_path
 #     return pdfFilename
-################################
+# ---------------------------------------------------------------
 def get_platform():
     SysName = platform.system()
     return SysName
-
-################################
+# ---------------------------------------------------------------
 def run_python_script(pyFile):
 
     pyEngine = 'python3'    # default for MacOS
@@ -47,8 +47,7 @@ def run_python_script(pyFile):
     
     pyShell = f"{pyEngine} {pyFile}"
     subprocess.call(pyShell, shell=True)
-################################
-
+# ---------------------------------------------------------------
 class PulverizerBot(tgBot):
     def __init__(self, token, startWord, helpWord):
         super().__init__(token, startWord, helpWord)
@@ -60,7 +59,7 @@ class PulverizerBot(tgBot):
 
         # core
         self.currentPdfPath = ""
-    ################################
+    # ---------------------------------------------------------------
     def file_identification(self, update, context):
         # create folder
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
@@ -83,8 +82,9 @@ class PulverizerBot(tgBot):
             self.currentPdfPath=file_path
         elif file_extension== ".md":
             self.mdPath =file_path
+            self.currentPdfPath = self.mdPath.replace(".md", ".pdf")
         update.message.reply_text(text=f"You have sent me a {file_extension} file." )
-    ################################################################
+    # ---------------------------------------------------------------
     def rename_pdf(self, update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
 
@@ -98,7 +98,7 @@ class PulverizerBot(tgBot):
                 self.currentPdfPath = self.new_pdfPath
             except:
                 pass
-    ################################################################
+    # ---------------------------------------------------------------
     def plas(self, update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
 
@@ -107,14 +107,14 @@ class PulverizerBot(tgBot):
         if convert_parameter!=None:
             run_python_script( f"{self.pulverizerFile} {self.currentPdfPath} {convert_parameter}" )
         update.message.reply_text(text="Page layout analysis - complete!")
-    # ------------
-    def send_box_md_files(self, update, context):        
+    # ---------------------------------------------------------------
+    def send_box_md_files(self, update, context):
         self.mdPath = self.currentPdfPath.replace('.pdf', '.md')
         box_pdfname = self.currentPdfPath.replace('.pdf', '_box.pdf')
         
         context.bot.send_document(chat_id=update.message.chat_id, document=open(self.mdPath, 'rb') )
         context.bot.send_document(chat_id=update.message.chat_id, document=open(box_pdfname, 'rb') )
-    ################################################################
+    # ---------------------------------------------------------------
     def md_crop(self, update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
 
@@ -125,20 +125,20 @@ class PulverizerBot(tgBot):
 
         annotate_pdfname = self.currentPdfPath.replace('.pdf', '_annt.pdf')
         context.bot.send_document(chat_id=update.message.chat_id, document=open(annotate_pdfname, 'rb') )
-    ################################################################
+    # ---------------------------------------------------------------
     def xk_file(self, update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
 
         xk_filepath = self.currentPdfPath.replace(".pdf", "_xk.pdf")
         context.bot.send_document(chat_id=update.message.chat_id, document=open(xk_filepath, 'rb') )
-    ################################################################
+    # ---------------------------------------------------------------
     def rm_files(self, update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
 
         shutil.rmtree(self.workFolder)
         update.message.reply_text( text="All your data is deleted!" )
         self.currentPdfPath=""
-    ################################################################
+    # ---------------------------------------------------------------
     def list_files(self, update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
 
@@ -153,7 +153,7 @@ class PulverizerBot(tgBot):
         # finalText = ""
         # [finalText=finalText+f"{i}n" for i in dir_list]
         update.message.reply_text( text=finalText )
-    ################################################################
+    # ---------------------------------------------------------------
     def send_files(self, update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
 
@@ -165,7 +165,7 @@ class PulverizerBot(tgBot):
             for fl in files:
                 file_to_send = os.path.join(self.workFolder, fl)
                 context.bot.send_document(chat_id=update.message.chat_id, document=open(file_to_send, 'rb') )
-
+    # ---------------------------------------------------------------
     def setCurrentPdf(self,update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
 
@@ -173,13 +173,11 @@ class PulverizerBot(tgBot):
         print(convert_parameter)
         if convert_parameter!=None:
             self.currentPdfPath = os.path.join( self.workFolder, f"{convert_parameter}.pdf")
-    
+    # ---------------------------------------------------------------
     def getCurrentPdf(self,update, context):
         self.workFolder = os.path.join(self.botDowloadFolder, str(update.message.chat_id) )
         update.message.reply_text( text=self.currentPdfPath )
-
-################################
-
+    # ---------------------------------------------------------------
     def advancedCommands(self):
     
         # download
@@ -202,7 +200,6 @@ class PulverizerBot(tgBot):
         for a in adv:
             self.pairs.append(a)
 
-
 # --------------------------------------
 def main():
     plvbot = PulverizerBot(token,startWord, helpWord)
@@ -212,7 +209,6 @@ if __name__ == '__main__':
     # --------------
     main()
     # --------------
-
 
 # ---------------------
 """

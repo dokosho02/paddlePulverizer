@@ -1,7 +1,15 @@
 #!/usr/local/bin/python3
 import argparse
 from datetime import datetime
-from cut_merge_k2 import cutAndMerge
+# from cut_merge_k2 import cutAndMerge
+from pdfDocument import PdfDocument
+
+
+col_div_percents = [
+    [1, 0, [0] ],
+    [2, 65, [48] ],
+    [3, 35, [38,69] ],
+]
 
 # commandline
 
@@ -72,6 +80,31 @@ def main():
             k2dpi=args.kdpi,
             mdtf = args.markdown,
         )
+
+# ---------------------------------------------------------------
+def cutAndMerge(pdfName, startPage, endPage, col, k2dpi, mdtf):
+    # parameter initilization
+    pdp, pcp = col_div_percents[0][1], col_div_percents[0][2]
+    for para in col_div_percents:
+        if (col==para[0]):
+            pdp = para[1]
+            pcp = para[2]
+
+    # doc definition
+    pdoc = PdfDocument(
+        fileName = pdfName,
+        startPage= startPage,       # 112
+        endPage  = endPage,       # 365
+        columns  = col   ,   # 2
+        pageDividerPercent = pdp ,   #    65; 35/8
+        pageColumnPercents = pcp ,   #    49, [38,69], [26,53,75], [25,38,50,68,76,88]
+        k2dpi  = k2dpi,
+        mdFile = mdtf,
+        twoSides=False
+    )
+    pdoc.run()
+# ---------------------------------------------------------------
+
 
 if __name__ == '__main__':
     start = datetime.now()

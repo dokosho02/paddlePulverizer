@@ -11,7 +11,6 @@ from tqdm import tqdm
 
 from pdf_annotate import PdfAnnotator, Location, Appearance
 
-
 from pdfPage import PdfPage
 from pic2pdf import image_to_pdf
 
@@ -21,6 +20,7 @@ digital_number = 3    # for image and pdf, digital number
 # for annotation
 boxColors = [ (0,0,1), (1, 0, 0), (0,1,0)]    # BRG, x-b-f
 thickness = 1
+fontSize = 40
 
 # a PDF is a PdfDocument Object
 class PdfDocument():
@@ -51,10 +51,10 @@ class PdfDocument():
         # log file
         self.mdFile = mdFile
         self.logPath = (self.path).replace('.pdf', '.md')
+        self.mdInfo = []
     # -----------------------------------------
     def run(self):
         self.metadata()
-
         # define all files
         self.allFiles()
 
@@ -136,9 +136,11 @@ class PdfDocument():
                                 appearance = Appearance(
                                     fill=(1,0,0),
                                     content=str(count),
-                                    font_size=40
+                                    font_size=fontSize,
                                 )
                             )
+
+                            print(f"{fontSize} - {x2-x1} - {y2-y1}")
                             count += 1
                     singlePdfPage.cropBlocksByPixel(areaInfo, self.pagepdfFolder, bl)
 
@@ -147,7 +149,6 @@ class PdfDocument():
 
         outpath_annotated = self.path.replace(".pdf", "_annt.pdf")
         annotator.write(outpath_annotated)
-
     # -----------------------------------------
     def cropFromScratch(self):        
         # create log file
@@ -270,9 +271,6 @@ class PdfDocument():
                 os.makedirs(childFolder)
 
         logger.info("pagepdf folders created")
-    # ------------------------
-    # def createLog(self):
-    #     pass
     # ------------------------
     def removeFiles(self):
         # delete pdf folder

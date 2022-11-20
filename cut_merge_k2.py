@@ -1,19 +1,8 @@
-from tqdm import tqdm
-import datetime, os, codecs
-import shutil
+# from tqdm import tqdm
+# import datetime, os, codecs
 
 # customize
-from pdfDocument import PdfDocument
-# from pdfPage import PdfPage
-
-# from pic2pdf import image_to_pdf
-# import _thread
-# from pdf_annotate import PdfAnnotator, Location, Appearance
-
-
-
-# thickness = 1
-# boxColors = [ (0,0,1), (1, 0, 0), (0,1,0)]    # BRG, x-b-f
+# from pdfDocument import PdfDocument
 
 """
 # 380 - 450 - 500
@@ -32,27 +21,6 @@ col_div_percents = [
     [3, 35, [38,69] ],
 ]
 
-def cutAndMerge(pdfName, startPage, endPage, col, k2dpi, mdtf):
-    # parameter initilization
-    pdp, pcp = col_div_percents[0][1], col_div_percents[0][2]
-    for para in col_div_percents:
-        if (col==para[0]):
-            pdp = para[1]
-            pcp = para[2]
-
-    # doc definition
-    pdoc = PdfDocument(
-        fileName = pdfName,
-        startPage= startPage,       # 112
-        endPage  = endPage,       # 365
-        columns  = col   ,   # 2
-        pageDividerPercent = pdp ,   #    65; 35/8
-        pageColumnPercents = pcp ,   #    49, [38,69], [26,53,75], [25,38,50,68,76,88]
-        k2dpi  = k2dpi,
-        mdFile = mdtf,
-        twoSides=False
-    )
-    pdoc.run()
 
 """
 N1-N5 grammar
