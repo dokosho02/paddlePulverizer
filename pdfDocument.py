@@ -20,7 +20,7 @@ digital_number = 3    # for image and pdf, digital number
 # for annotation
 boxColors = [ (0,0,1), (1, 0, 0), (0,1,0)]    # BRG, x-b-f
 thickness = 1
-fontSize = 40
+# fontSize = 40
 
 # a PDF is a PdfDocument Object
 class PdfDocument():
@@ -52,6 +52,8 @@ class PdfDocument():
         self.mdFile = mdFile
         self.logPath = (self.path).replace('.pdf', '.md')
         self.mdInfo = []
+
+        self.annotateFontsize = 40
     # -----------------------------------------
     def run(self):
         self.metadata()
@@ -125,9 +127,9 @@ class PdfDocument():
 
                             # text
 
-                            if (fontSize > areas[3]-areas[1]):
-                                fontSize = areas[3]-areas[1]
-                                
+                            if (self.annotateFontsize > areas[3]-areas[1]):
+                                self.annotateFontsize = areas[3]-areas[1]
+
                             annotator.add_annotation(
                                 'text',
                                 location = Location(
@@ -140,7 +142,7 @@ class PdfDocument():
                                 appearance = Appearance(
                                     fill=(1,0,0),
                                     content=str(count),
-                                    font_size=fontSize,
+                                    font_size=self.annotateFontsize,
                                 )
                             )
 
