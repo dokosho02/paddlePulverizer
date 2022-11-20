@@ -76,7 +76,7 @@ def main():
             pdfName=pdf,
             startPage=args.pagerange[0],
             endPage  =args.pagerange[1],
-            col=args.column,
+            col  =args.column,
             k2dpi=args.kdpi,
             mdtf = args.markdown,
         )

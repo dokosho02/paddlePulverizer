@@ -140,7 +140,7 @@ class PdfDocument():
                                 )
                             )
 
-                            print(f"{fontSize} - {x2-x1} - {y2-y1}")
+                            print(f"{fontSize} - {areas[2]-areas[0]} - {areas[3]-areas[1]}")
                             count += 1
                     singlePdfPage.cropBlocksByPixel(areaInfo, self.pagepdfFolder, bl)
 
