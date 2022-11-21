@@ -12,6 +12,9 @@ from tqdm import tqdm
 from pdfPage import PdfPage
 from pic2pdf import image_to_pdf
 
+import multiprocessing
+import numpy as np
+from datetime import datetime
 
 digital_number = 3    # for image and pdf, digital number
 
@@ -29,6 +32,7 @@ class Document():
         columns  =2,
         pageDividerPercent=65,
         pageColumnPercents=49, 
+        proc = 1,
         k2dpi = 500,
         mdFile = None,
         twoSides=False):
@@ -43,13 +47,15 @@ class Document():
         self.pageDividerPercent = pageDividerPercent   # divider, percent for one element
         self.pageColumnPercents = pageColumnPercents   # a list
 
+        self.proc = proc
         self.twoSides = twoSides
         self.k2dpi = k2dpi
 
         # log file
         self.mdFile = mdFile
         self.logPath = (self.path).replace('.pdf', '.md')
-        self.mdInfo = []
+        self.mdInfoFinal = []
+        self.jobs  = []
 
         self.annotateFontsize = 40
     # -----------------------------------------
@@ -155,25 +161,87 @@ class Document():
         outpath_annotated = self.path.replace(".pdf", "_annt.pdf")
         annotator.write(outpath_annotated)
     # -----------------------------------------
-    def cropFromScratch(self):
-    
-        print("\nThere is no log file.\nStarting to cut the pdf document with plas (page layout analysis)...\n")
-
-        self.convert2Image()
-
+    def singleProcess(self):
         with tqdm(total=len(self.originalImagePaths), desc="cutting with AI tech...") as pbar:
             for i in range(len(self.originalImagePaths)):
                 self.processPage(i)
                 pbar.update(1)
         pbar.close()
-
-        # print(self.mdInfo)
+    # -----------------------------------------
+    def processPageRange(self, rangeLs):    # list
+        for i in rangeLs:
+            self.processPage(i)
+    # -----------------------------------------
+    def postPLAS(self):
         # arrange md info
         self.mdInfo = sorted(self.mdInfo, key=lambda x: x[0][0])
-
-        # ----
         image_to_pdf(self.path)
         self.writeLog2md()
+    # -----------------------------------------
+    def cropFromScratch(self):
+    
+        print("\nThere is no log file.\nStarting to cut the pdf document with plas (page layout analysis)...\n")
+
+        self.convert2Image()
+        start = datetime.now()
+
+        # process version
+        z = len(self.originalImagePaths)
+        xc = int(np.ceil(z/self.proc))
+        if self.proc ==1:
+            self.mdInfo = []
+            self.singleProcess()
+            self.postPLAS()
+        else:
+            with multiprocessing.Manager() as manager:
+                # first part
+                self.mdInfo = manager.list()
+                print(self.mdInfo)
+
+                r1 = list(range(0,xc))
+                p1 = multiprocessing.Process(
+                    target=self.processPageRange,
+                    args=(r1,)
+                )
+                self.jobs.append(p1)
+
+                if self.proc > 2:
+                    # intermediate part
+                    for i in range(2,self.proc):
+                        r = list(range(xc*(i-1),xc*i))
+                        p = multiprocessing.Process(
+                            target=self.processPageRange,
+                            args=(r,)
+                        )
+                        self.jobs.append(p)
+
+                # last part
+                r2 = list(range(xc*(self.proc-1),z))
+                p2 = multiprocessing.Process(
+                    target=self.processPageRange,
+                    args=(r2,)
+                )
+                self.jobs.append(p2)
+                
+                for j in self.jobs:
+                    j.start()
+                for j in self.jobs:
+                    j.join()
+                
+                print(self.mdInfo)
+                self.postPLAS()
+
+
+        end = datetime.now()
+        timeDuration = str(end - start).zfill(4)
+        print(end)
+        print(f"Time - plas -- {timeDuration}")
+        
+        # arrange md info
+        # self.mdInfoFinal = sorted(self.mdInfoFinal, key=lambda x: x[0][0])
+        # ----
+        # image_to_pdf(self.path)
+        # self.writeLog2md()
     # -----------------------------------------
     def processPage(self, i):
         # start to process images
@@ -229,6 +297,7 @@ class Document():
         logger.debug(f"Page coloumn(s) = {self.columns}")
         logger.debug(f"Page divider percent = {self.pageDividerPercent}")
         logger.debug(f"Page column percents = {self.pageColumnPercents}")
+        logger.debug(f"{self.proc} process(es) will be created...")
 
         # make sure no fake pages
         if (self.endPage > self.pdfPageNo):
@@ -392,3 +461,24 @@ def mergePDFs(pdfs):
                 [textFolder],
                 ["_x.pdf"],
                 ["-bpc 1"] ):"""
+
+# -----------------------------------------------
+
+def divideByN(list2divide,n):
+    print(list2divide)
+    listFinal = []
+    xc = int(np.ceil(len(list2divide)/n))
+    if n == 1:
+        listFinal = list2divide
+        print(listFinal)
+    else:
+        listFinal.append(list2divide[:xc]) # first slice
+        if n > 2:
+            for i in range(2,n):
+                listFinal.append(list2divide[xc*(i-1):xc*i]) # intermediate slice
+
+        listFinal.append(list2divide[xc*(n-1):]) # last slice
+
+        [print(lf) for lf in listFinal]
+    
+    return listFinal

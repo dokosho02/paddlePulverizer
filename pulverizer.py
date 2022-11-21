@@ -1,7 +1,6 @@
 #!/usr/local/bin/python3
 import argparse
 from datetime import datetime
-# from cut_merge_k2 import cutAndMerge
 from Document import Document
 
 
@@ -50,6 +49,10 @@ def main():
         default=[1,500],
         nargs=2,    # two arguments
         help = "page range to process")
+    parser.add_argument("-pr", "--process",
+        type=int,
+        default=1,
+        help = "process number")
     # --------
     parser.add_argument("-md","--markdown", 
         action='store_true',
@@ -77,12 +80,13 @@ def main():
             startPage=args.pagerange[0],
             endPage  =args.pagerange[1],
             col  =args.column,
+            proc = args.process,
             k2dpi=args.kdpi,
             mdtf = args.markdown,
         )
 
 # ---------------------------------------------------------------
-def cutAndMerge(pdfName, startPage, endPage, col, k2dpi, mdtf):
+def cutAndMerge(pdfName, startPage, endPage, col, proc, k2dpi, mdtf):
     # parameter initilization
     pdp, pcp = col_div_percents[0][1], col_div_percents[0][2]
     for para in col_div_percents:
@@ -98,6 +102,7 @@ def cutAndMerge(pdfName, startPage, endPage, col, k2dpi, mdtf):
         columns  = col   ,   # 2
         pageDividerPercent = pdp ,   #    65; 35/8
         pageColumnPercents = pcp ,   #    49, [38,69], [26,53,75], [25,38,50,68,76,88]
+        proc = proc,
         k2dpi  = k2dpi,
         mdFile = mdtf,
         twoSides=False
