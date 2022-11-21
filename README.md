@@ -27,18 +27,22 @@ and then reflow the pdf document for reading on kindle paperwhite 3 using [`k2pd
   - `tqdm`
   - `loguru`
   - `pytesseract`
+    
 
 - Telegram bot
   - [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot)
 ### Other dependencies
 - `poppler` - the dependency of `pdf2image` package
   - [for windows](https://blog.alivate.com.au/poppler-windows/)
+  - [Ubuntu](https://stackoverflow.com/questions/32156047/how-to-install-poppler-in-ubuntu-15-04) - `sudo apt-get install -y poppler-utils`
 - [`tesseract`](https://github.com/UB-Mannheim/tesseract/) - OCR function for figure caption recognition
   - [for windows](https://github.com/UB-Mannheim/tesseract/wiki/)
+  - [Ubuntu](https://techviewleo.com/how-to-install-tesseract-ocr-on-ubuntu/)
 
 ### Optional functions
 
 - [`k2pdfopt`](https://www.willus.com/k2pdfopt/) - reflow of pdf text file
+  - [Ubuntu](https://www.devmanuals.net/install/ubuntu/ubuntu-20-04-focal-fossa/installing-k2pdfopt-on-ubuntu20-04.html) - `sudo apt-get install k2pdfopt -y`
 
 
 ## Usage
@@ -75,12 +79,16 @@ setx PULVERIZER_BOT_TOKEN "your bot token"
 ```
 ##### macOS
 
+```sh
+export ...
+```
+
 ##### Linux
 
 
 #### Functions
 
-#### Basics of Telegram Bot
+##### Basics of Telegram Bot
 ```sh
 /start
 ```

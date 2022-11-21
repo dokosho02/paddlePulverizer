@@ -280,7 +280,8 @@ class Document():
             singlePdfPage.cropBlocksByPixel(areaInfo, self.pagepdfFolder, bl)
 
             # f.close()
-        self.mdInfo.append(singlePdfPage.mdInfo)
+        if len(singlePdfPage.mdInfo) >0:
+            self.mdInfo.append(singlePdfPage.mdInfo)
     # ----------------------------------------
     def metadata(self):
         print(f'PDF Name -- {self.path}')
