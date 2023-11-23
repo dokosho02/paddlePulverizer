@@ -2,21 +2,21 @@
 
 ## Introduction
 
-page layout analysis of pdf document
-
-and then reflow the pdf document for reading on kindle paperwhite 3 using [`k2pdfopt`](https://www.willus.com/k2pdfopt/)
-
+1. page layout analysis of a pdf document
+2. text reflow of the pdf document for reading on kindle paperwhite 3
 
 
-## Denpendencies
+## Dependencies
+
+Python 3.7.x ~ 3.8.x due to paddle dependency
 
 ### Python packages
 - pdf processing
   - `PyPDF4`
-  - `pdf-annotate`
   - `pdf2image`
+  - `pdf-annotate`
 - image processing
-  - `opencv_contrib_python>=4.4.0.46`
+  - `opencv_contrib_python==4.4.0.46`
   - `opencv-python-headless==4.1.2.30`
   - `Pillow`
 - [`Paddle series`](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.2/ppstructure/README_ch.md) - It seems that these packages need to be installed individually.
@@ -26,17 +26,17 @@ and then reflow the pdf document for reading on kindle paperwhite 3 using [`k2pd
 - others
   - `tqdm`
   - `loguru`
+  - `numpy`
   - `pytesseract`
-    
+  - [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) (optional)
 
-- Telegram bot
-  - [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot)
+
 ### Other dependencies
 - `poppler` - the dependency of `pdf2image` package
-  - [for windows](https://blog.alivate.com.au/poppler-windows/)
+  - [Windows](https://github.com/oschwartz10612/poppler-windows)
   - [Ubuntu](https://stackoverflow.com/questions/32156047/how-to-install-poppler-in-ubuntu-15-04) - `sudo apt-get install -y poppler-utils`
 - [`tesseract`](https://github.com/UB-Mannheim/tesseract/) - OCR function for figure caption recognition
-  - [for windows](https://github.com/UB-Mannheim/tesseract/wiki/)
+  - [Windows](https://github.com/UB-Mannheim/tesseract/wiki/)
   - [Ubuntu](https://techviewleo.com/how-to-install-tesseract-ocr-on-ubuntu/)
 
 ### Optional functions
@@ -44,12 +44,21 @@ and then reflow the pdf document for reading on kindle paperwhite 3 using [`k2pd
 - [`k2pdfopt`](https://www.willus.com/k2pdfopt/) - reflow of pdf text file
   - [Ubuntu](https://www.devmanuals.net/install/ubuntu/ubuntu-20-04-focal-fossa/installing-k2pdfopt-on-ubuntu20-04.html) - `sudo apt-get install k2pdfopt -y`
 
+## Installation
 
+The installation without telegram bot function is as follows:
+```sh
+py -m pip install -r requirements.txt
+py -m pip install paddlepaddle==2.1.1 -i https://mirror.baidu.com/pypi/simple
+py -m pip install -U https://paddleocr.bj.bcebos.com/whl/layoutparser-0.0.0-py3-none-any.whl
+```
 ## Usage
 
 ### Command line
 
 #### Help
+
+See options in details:
 ```sh
 python pulverizer.py -h
 ```
@@ -58,7 +67,22 @@ python pulverizer.py -h
 ```sh
 python pulverizer.py yourfile1.pdf [yourfile2.pdf ...] [-c 1] [-p 1 20]
 ```
-then you could edit the `.md` file
+
+When you run the code for the first time, it will take a while to download model data. After that, page layout analysis will start to work.
+
+Then you could edit the `.md` file based on the annotated pdf file.
+
+line template of the `.md` file
+
+```
+1	x	61.87	697.18	104.68	712.64
+pageNumber pageType left bottom right top
+```
+
+- `pageType`
+  - `x` for text
+  - `b` for table
+  - `f` for figure
 
 #### Crop pdf(s) based on `.md` file and reflow the text
 ```sh
@@ -138,8 +162,8 @@ It is very difficult to pack the source code together via `pyinstaller` due to t
 ## Issues
 - [ ] the bottom of rectangle shapes should be lower
 - [ ] `pdf-annotate` - rectangle shapes have some drift but the pdf cropping is correct
+- [x]  `multiprocess` loses function (change to `concurrent.futures`) - 2023-11-23 - 2023-11-23
 - [x] delete the last line of `.md` file - 2022-04-11 - 2022-11-20
-
 - [x] `opencv-python-headless==4.1.2.30` [stackoverflow discussion](https://stackoverflow.com/questions/70537488/cannot-import-name-registermattype-from-cv2-cv2)
 
 

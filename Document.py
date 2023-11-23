@@ -12,7 +12,8 @@ from tqdm import tqdm
 from pdfPage import PdfPage
 from pic2pdf import image_to_pdf
 
-import multiprocessing
+import concurrent.futures
+
 import numpy as np
 from datetime import datetime
 
@@ -188,48 +189,36 @@ class Document():
         # process version
         z = len(self.originalImagePaths)
         xc = int(np.ceil(z/self.proc))
-        if self.proc ==1:
+        if self.proc == 1:
             self.mdInfo = []
             self.singleProcess()
             self.postPLAS()
         else:
-            with multiprocessing.Manager() as manager:
-                # first part
-                self.mdInfo = manager.list()
-                print(self.mdInfo)
+            executor = concurrent.futures.ThreadPoolExecutor()
+            # first part
+            self.mdInfo = []
+            futures = []
+            print(self.mdInfo)
+            r1 = list(range(0,xc))
+            futures.append(executor.submit(self.processPageRange, r1))
 
-                r1 = list(range(0,xc))
-                p1 = multiprocessing.Process(
-                    target=self.processPageRange,
-                    args=(r1,)
-                )
-                self.jobs.append(p1)
+            if self.proc > 2:
+                # intermediate part
+                for i in range(2,self.proc):
+                    r = list(range(xc*(i-1),xc*i))
+                    futures.append(executor.submit(self.processPageRange, r))
 
-                if self.proc > 2:
-                    # intermediate part
-                    for i in range(2,self.proc):
-                        r = list(range(xc*(i-1),xc*i))
-                        p = multiprocessing.Process(
-                            target=self.processPageRange,
-                            args=(r,)
-                        )
-                        self.jobs.append(p)
+            # last part
+            r2 = list(range(xc*(self.proc-1),z))
+            futures.append(executor.submit(self.processPageRange, r2))
 
-                # last part
-                r2 = list(range(xc*(self.proc-1),z))
-                p2 = multiprocessing.Process(
-                    target=self.processPageRange,
-                    args=(r2,)
-                )
-                self.jobs.append(p2)
-                
-                for j in self.jobs:
-                    j.start()
-                for j in self.jobs:
-                    j.join()
-                
-                print(self.mdInfo)
-                self.postPLAS()
+            # wait for all threads to complete
+            done, not_done = concurrent.futures.wait(futures, timeout=None)
+
+            # done
+
+            print(self.mdInfo)
+            self.postPLAS()
 
 
         end = datetime.now()
