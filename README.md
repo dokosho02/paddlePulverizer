@@ -3,8 +3,7 @@
 ## Introduction
 
 1. page layout analysis of a pdf document
-2. text reflow of the pdf document for reading on kindle paperwhite 3
-
+2. text reflow of the pdf document for reading on a kindle paperwhite 3
 
 ## Dependencies
 
@@ -69,6 +68,8 @@ python pulverizer.py yourfile1.pdf [yourfile2.pdf ...] [-c 1] [-p 1 20]
 ```
 
 When you run the code for the first time, it will take a while to download model data. After that, page layout analysis will start to work.
+
+Pdf files in the [example](./example) folder show the result.
 
 Then you could edit the `.md` file based on the annotated pdf file.
 
