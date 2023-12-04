@@ -71,7 +71,7 @@ When you run the code for the first time, it will take a while to download model
 
 Pdf files in the [example](./example) folder show the result.
 
-Then you could edit the `.md` file based on the annotated pdf file.
+Then you could edit the `.md` file based on the annotated pdf file (`*_box.pdf` or `*_annotated.pdf`).
 
 line template of the `.md` file
 
