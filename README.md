@@ -27,7 +27,7 @@ Python 3.7.x ~ 3.8.x due to paddle dependency
   - `loguru`
   - `numpy`
   - `pytesseract`
-  - [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) (optional)
+  - [`python-telegram-bot`](https://github.com/python-telegram-bot/python-telegram-bot) (optional, <= 13.15)
 
 
 ### Other dependencies
@@ -95,7 +95,9 @@ The same pattern (arguments) is applied to all `yourfile.pdf`.
 
 ### Telegram bot
 
-try [this bot](https://t.me/pulverize_bot) on Telegram
+try [this bot](https://t.me/pulverize_bot) on Telegram (not available not)
+
+But you can set up one by yourself.
 
 #### Settings
 ##### windows
