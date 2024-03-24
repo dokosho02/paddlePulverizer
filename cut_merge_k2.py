@@ -10,7 +10,6 @@
  -x -dev kp3 -idpi 450 -odpi 450 -fc- -j 0 -col 1 -bpc 2 -rt 0
  -x -dev kp3 -idpi 380 -odpi 380 -fc- -j 0 -col 1 -bpc 2 -rt 0
 
-300 for 地球物理学报
 """
 # ------------------------
 # ScienceDirect

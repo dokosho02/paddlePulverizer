@@ -1,9 +1,23 @@
 # PaddlePulverizer
 
+a wrapper for PaddleOCR and k2pdfopt
+
 ## Introduction
 
-1. page layout analysis of a pdf document
-2. text reflow of the pdf document for reading on a kindle paperwhite 3
+1. page layout analysis (based on `PaddlePaddle`) of a pdf document
+2. text reflow (using `k2pdfopt`) of the pdf document for reading on a kindle paperwhite 3
+
+## Installation
+
+Firstly, `Python 3.7.x ~ 3.8.x`, `poppler` and `tesseract` should be installed. For details, refer to `Other dependencies` below.
+
+Then the installation of all python packages without telegram bot function is as follows ([a virtual environment](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/) is recommended):
+
+```sh
+py -m pip install -r requirements.txt
+py -m pip install paddlepaddle==2.1.1 -i https://mirror.baidu.com/pypi/simple
+py -m pip install -U https://paddleocr.bj.bcebos.com/whl/layoutparser-0.0.0-py3-none-any.whl
+```
 
 ## Dependencies
 
@@ -43,14 +57,7 @@ Python 3.7.x ~ 3.8.x due to paddle dependency
 - [`k2pdfopt`](https://www.willus.com/k2pdfopt/) - reflow of pdf text file
   - [Ubuntu](https://www.devmanuals.net/install/ubuntu/ubuntu-20-04-focal-fossa/installing-k2pdfopt-on-ubuntu20-04.html) - `sudo apt-get install k2pdfopt -y`
 
-## Installation
 
-The installation without telegram bot function is as follows:
-```sh
-py -m pip install -r requirements.txt
-py -m pip install paddlepaddle==2.1.1 -i https://mirror.baidu.com/pypi/simple
-py -m pip install -U https://paddleocr.bj.bcebos.com/whl/layoutparser-0.0.0-py3-none-any.whl
-```
 ## Usage
 
 ### Command line
@@ -59,12 +66,12 @@ py -m pip install -U https://paddleocr.bj.bcebos.com/whl/layoutparser-0.0.0-py3-
 
 See options in details:
 ```sh
-python pulverizer.py -h
+py pulverizer.py -h
 ```
 
 #### Page layout analysis
 ```sh
-python pulverizer.py yourfile1.pdf [yourfile2.pdf ...] [-c 1] [-p 1 20]
+py pulverizer.py yourfile1.pdf [yourfile2.pdf ...] [-c 1] [-p 1 20]
 ```
 
 When you run the code for the first time, it will take a while to download model data. After that, page layout analysis will start to work.
@@ -90,14 +97,11 @@ pageNumber pageType left bottom right top
 python pulverizer.py yourfile.pdf [yourfile2.pdf ...] -md [-k 300]
 ```
 
-
 The same pattern (arguments) is applied to all `yourfile.pdf`.
 
 ### Telegram bot
 
-try [this bot](https://t.me/pulverize_bot) on Telegram (not available not)
-
-But you can set up one by yourself.
+You can set up one by yourself.
 
 #### Settings
 ##### windows
