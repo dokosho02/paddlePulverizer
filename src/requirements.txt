@@ -1,0 +1,7 @@
+layoutparser
+paddlepaddle
+paddleocr
+loguru
+PyPDF4
+pdf-annotate
+pytesseract
